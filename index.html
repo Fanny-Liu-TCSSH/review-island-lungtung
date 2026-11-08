@@ -1639,11 +1639,14 @@ window.addEventListener('keydown',function(e){
 
 /* ---------- spreadsheet outbox ---------- */
 var flushing=false;
-function queueRecord(rec){if(!window.SHEET_URL)return;rec.sentAt=new Date().toISOString();S.outbox.push(rec);if(S.outbox.length>200)S.outbox=S.outbox.slice(-200);}
-function flushOutbox(){if(!window.SHEET_URL||flushing||!S.outbox.length||!window.fetch)return;flushing=true;var rec=S.outbox[0];
-  fetch(window.SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)})
-    .then(function(){S.outbox.shift();save();flushing=false;flushOutbox();})
-    .catch(function(){flushing=false;});}
+function gas(){return !!(window.google&&google.script&&google.script.run);}
+function hasSink(){return !!window.SHEET_URL||gas();}
+function queueRecord(rec){if(!hasSink())return;rec.sentAt=new Date().toISOString();S.outbox.push(rec);if(S.outbox.length>200)S.outbox=S.outbox.slice(-200);}
+function flushOutbox(){if(!hasSink()||flushing||!S.outbox.length)return;flushing=true;var rec=S.outbox[0];
+  var ok=function(){S.outbox.shift();save();flushing=false;flushOutbox();},bad=function(){flushing=false;};
+  if(gas()){google.script.run.withSuccessHandler(ok).withFailureHandler(bad).saveRecord(rec);return;}
+  if(!window.fetch){flushing=false;return;}
+  fetch(window.SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)}).then(ok).catch(bad);}
 
 /* ---------- City Log ---------- */
 function allDone(){return ISL.every(function(d){return d.done===d.total;});}
@@ -1657,7 +1660,7 @@ function openLog(){
   var recent=logs.slice(-15).reverse().map(function(e){var lev=DATA[e.id].levels[e.li];
     return '<tr><td class="num">'+stamp(e.t)+'</td><td>'+(DATA[e.id].mag?esc(DATA[e.id].name):e.id)+' '+esc(lev.name)+(e.retry?'（錯題重練）':'')+'</td><td class="num">'+e.score+'/'+e.total+'</td><td class="num">'+fmtT(e.secs)+'</td></tr>';}).join('');
   var who=S.player?esc(S.player.name)+' 的學習日誌':'學習日誌';
-  var pend=window.SHEET_URL&&S.outbox.length?'<div class="pend">還有 '+S.outbox.length+' 筆紀錄等待上傳到老師的試算表。<button class="more" data-act="resend">重新上傳</button></div>':'';
+  var pend=hasSink()&&S.outbox.length?'<div class="pend">還有 '+S.outbox.length+' 筆紀錄等待上傳到老師的試算表。<button class="more" data-act="resend">重新上傳</button></div>':'';
   openSheet('<div class="sheet-body">'+X+'<p class="eyebrow">CITY LOG</p><h2 id="sheetTitle" style="font-size:clamp(30px,4vw,46px);font-weight:900;margin:12px 0 6px">'+who+'</h2>'+
     '<p class="desc" style="font-size:16px;color:var(--muted);margin:0">'+(S.player?esc(S.player.cls+' 班 '+S.player.seat+' 號'):'')+'</p>'+
     '<div class="res-big"><div><b>'+doneN+'/'+all+'</b><span>點亮的水晶</span></div><div><b>'+logs.length+'</b><span>作答次數</span></div><div><b>'+fmtT(secs)+'</b><span>累計作答時間</span></div><div><b>'+(allQ?Math.round(bestS/allQ*100):0)+'%</b><span>最佳紀錄答對率</span></div></div>'+pend+
