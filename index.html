@@ -1,0 +1,1757 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>第二次段考複習島</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#cfe6e8; --panel:rgba(255,252,247,.86); --panel-solid:#fffcf7; --sheet:#fffcf7; --card:#fff8f2; --card-line:#f0dfd2;
+  --ink:#2b2622; --muted:#7a6f66; --line:rgba(120,90,60,.13); --track:#f1dfd3;
+  --coral:#e07a55; --coral-ink:#c25a35; --on-coral:#ffffff; --coral-soft:#fbe9e0;
+  --mint:#6aa89b; --mint-soft:#e8f3ef; --gold:#d9a62e; --gold-soft:#fdf1d4; --ok:#3f8f6b; --ok-soft:#e3f3ea; --bad:#c2473a; --bad-soft:#fbe5e1;
+  --tag-bg:rgba(255,253,249,.94); --tag-ink:#2b2622; --tag-muted:#7a6f66;
+  --scrim:rgba(40,46,52,.38);
+  --shadow:0 18px 40px -18px rgba(60,40,20,.38);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1d2433; --panel:rgba(30,34,46,.86); --panel-solid:#1e222e; --sheet:#20242f; --card:#272c38; --card-line:#353b49;
+    --ink:#f3ede6; --muted:#b8afa5; --line:rgba(255,255,255,.08); --track:rgba(255,255,255,.12);
+    --coral-soft:#3f2e2a; --mint-soft:#24332f; --gold-soft:#3a3222; --ok:#7fcfa6; --ok-soft:#22362c; --bad:#f19a8c; --bad-soft:#3d2724;
+    --scrim:rgba(5,8,14,.55); --shadow:0 18px 40px -18px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1d2433; --panel:rgba(30,34,46,.86); --panel-solid:#1e222e; --sheet:#20242f; --card:#272c38; --card-line:#353b49;
+  --ink:#f3ede6; --muted:#b8afa5; --line:rgba(255,255,255,.08); --track:rgba(255,255,255,.12);
+  --coral-soft:#3f2e2a; --mint-soft:#24332f; --gold-soft:#3a3222; --ok:#7fcfa6; --ok-soft:#22362c; --bad:#f19a8c; --bad-soft:#3d2724;
+  --scrim:rgba(5,8,14,.55); --shadow:0 18px 40px -18px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+#scene{position:fixed;inset:0;touch-action:none}
+#scene canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
+
+.index{position:fixed;z-index:3;left:calc(20px + env(safe-area-inset-left,0px));top:calc(20px + env(safe-area-inset-top,0px));
+  width:min(380px,calc(100vw - 40px));padding:22px 24px 20px;background:var(--panel);
+  -webkit-backdrop-filter:blur(14px) saturate(1.15);backdrop-filter:blur(14px) saturate(1.15);
+  border-radius:26px;box-shadow:var(--shadow),inset 0 0 0 1px var(--line)}
+.eyebrow{display:flex;align-items:center;gap:10px;margin:0;font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--coral-ink)}
+.eyebrow::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 4px rgba(224,122,85,.2)}
+.index h1{font-size:clamp(26px,3vw,36px);font-weight:900;margin:12px 0 8px;line-height:1.15;letter-spacing:.01em}
+.lede{font-size:14px;line-height:1.75;color:var(--muted);margin:0 0 16px}
+.bar{height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#eab07a,var(--coral));transition:width .6s ease}
+.meta{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.tools{position:fixed;z-index:3;right:calc(20px + env(safe-area-inset-right,0px));top:calc(20px + env(safe-area-inset-top,0px));display:flex;gap:10px;align-items:center}
+.tool{width:48px;height:48px;border:0;border-radius:50%;background:var(--panel);color:var(--ink);cursor:pointer;
+  display:grid;place-items:center;box-shadow:var(--shadow),inset 0 0 0 1px var(--line);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);transition:transform .15s ease,background .2s}
+.tool:hover{transform:translateY(-1px)}
+.tool[aria-pressed="true"]{background:var(--coral);color:var(--on-coral)}
+.tool svg{width:22px;height:22px}
+.player{height:48px;padding:0 18px 0 6px;border:0;border-radius:99px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;cursor:pointer;
+  background:var(--panel);box-shadow:var(--shadow),inset 0 0 0 1px var(--line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.player .dot{width:36px;height:36px;border-radius:50%;background:var(--coral);color:var(--on-coral);display:grid;place-items:center}
+.player .dot svg{width:18px;height:18px}
+
+.clock{position:fixed;z-index:3;left:calc(20px + env(safe-area-inset-left,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  display:flex;align-items:center;gap:4px;padding:6px;border-radius:99px;background:var(--panel);
+  box-shadow:var(--shadow),inset 0 0 0 1px var(--line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.clock time{font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;padding:0 10px 0 2px;min-width:58px}
+.clock .play{width:36px;height:36px;border-radius:50%;border:0;background:var(--ink);color:var(--panel-solid);display:grid;place-items:center;cursor:pointer}
+.clock .play svg{width:14px;height:14px}
+.clock .jump{border:0;background:transparent;border-radius:99px;padding:8px 12px;font-size:13px;color:var(--muted);cursor:pointer}
+.clock .jump:hover{background:var(--track);color:var(--ink)}
+.hint{position:fixed;z-index:3;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  font-size:12px;color:var(--muted);background:var(--panel);padding:9px 14px;border-radius:99px;box-shadow:inset 0 0 0 1px var(--line)}
+.hint .touch{display:none}
+@media (pointer:coarse){.hint .mouse{display:none}.hint .touch{display:inline}}
+
+#tags{position:fixed;inset:0;z-index:2;pointer-events:none}
+.tag{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;border:0;white-space:nowrap;
+  background:var(--tag-bg);color:var(--tag-ink);border-radius:16px;padding:7px 14px 8px;text-align:center;line-height:1.35;
+  box-shadow:0 10px 22px -12px rgba(60,40,20,.55);transition:box-shadow .2s}
+.tag::after{content:"";position:absolute;left:50%;bottom:-6px;width:12px;height:12px;background:inherit;transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.tag b{color:var(--coral-ink);font-weight:700;font-size:13px}
+.tag small{font-size:13px;color:var(--tag-muted);margin-left:4px;font-variant-numeric:tabular-nums}
+.tag em{font-style:normal;font-size:12px;font-weight:700;color:#fff;background:var(--coral);border-radius:99px;padding:1px 7px;margin-left:6px}
+.tag span{display:block;font-size:14px;font-weight:500;position:relative;z-index:1}
+.tag.is-hover{box-shadow:0 0 0 2px var(--coral),0 12px 26px -12px rgba(60,40,20,.6)}
+.tag.is-done b{color:var(--gold)}
+.tag.mag{padding:5px 11px 6px;border-radius:13px}
+.tag.mag b{color:var(--mint);font-size:12px}
+.tag.mag small{font-size:12px}
+.tag.mag span{font-size:13px}
+body.no-tags .tag{display:none}
+
+.toast{position:fixed;z-index:40;left:50%;bottom:calc(86px + env(safe-area-inset-bottom,0px));transform:translate(-50%,12px);opacity:0;
+  background:var(--panel-solid);color:var(--ink);padding:12px 18px;border-radius:16px;font-size:14px;box-shadow:var(--shadow),inset 0 0 0 1px var(--line);
+  transition:opacity .25s, transform .25s;pointer-events:none;max-width:calc(100vw - 40px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.loader{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:var(--bg);transition:opacity .7s ease}
+.loader p{margin:0;font-size:16px;font-weight:700}
+.loader small{display:block;margin-top:6px;font-size:13px;font-weight:400;color:var(--muted);text-align:center}
+.loader.done{opacity:0;pointer-events:none}
+
+/* ---------- sheets (modals) ---------- */
+.scrim{position:fixed;inset:0;z-index:20;background:var(--scrim);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.scrim[hidden]{display:none}
+.sheet{position:relative;width:min(980px,100%);max-height:100%;display:flex;flex-direction:column;background:var(--sheet);color:var(--ink);
+  border-radius:32px;box-shadow:0 30px 80px -30px rgba(30,20,10,.55);overflow:hidden}
+.sheet.narrow{width:min(760px,100%)}
+.sheet-body{overflow:auto;padding:44px 52px 24px;overscroll-behavior:contain}
+.sheet-foot{display:flex;gap:12px;justify-content:flex-end;align-items:center;padding:16px 52px 28px;background:linear-gradient(to bottom,transparent,var(--sheet) 30%)}
+.sheet-foot .grow{flex:1;font-size:13px;color:var(--muted)}
+.btn{border:0;border-radius:18px;padding:15px 26px;font-weight:700;font-size:16px;cursor:pointer;transition:transform .12s ease,filter .2s}
+.btn:hover{filter:brightness(1.04)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--coral);color:var(--on-coral);box-shadow:0 10px 22px -10px rgba(224,122,85,.8)}
+.btn-ghost{background:var(--coral-soft);color:var(--ink)}
+.btn-gold{background:#f6d77e;color:#2b2622}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.x{position:absolute;right:18px;top:18px;width:40px;height:40px;border:0;border-radius:50%;background:var(--coral-soft);cursor:pointer;display:grid;place-items:center}
+.x svg{width:16px;height:16px}
+
+/* login */
+.login .badge{width:112px;height:112px;border-radius:30px;background:#f6d77e;display:grid;place-items:center;box-shadow:inset 0 -10px 0 rgba(0,0,0,.06)}
+.login .badge svg{width:46px;height:46px;color:#2b2622}
+.login h2{font-size:clamp(32px,4.4vw,52px);font-weight:900;margin:26px 0 14px;line-height:1.1}
+.login .intro{font-size:17px;line-height:1.85;color:var(--muted);margin:0 0 28px;max-width:56ch}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:0 0 30px;padding:0;list-style:none;counter-reset:s}
+.steps li{background:var(--coral-soft);border-radius:22px;padding:20px 22px;font-size:15px;line-height:1.7;color:var(--muted);counter-increment:s}
+.steps li::before{content:counter(s,decimal-leading-zero);display:block;font-size:26px;font-weight:700;color:var(--coral-ink);margin-bottom:8px}
+.fields{display:grid;grid-template-columns:1fr 1fr 2fr;gap:14px}
+.field label{display:block;font-size:14px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.field input{width:100%;font:inherit;font-size:18px;color:var(--ink);background:var(--card);border:2px solid var(--card-line);border-radius:16px;padding:14px 16px}
+.field input:focus{border-color:var(--coral);outline:none}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:10px 0 0}
+
+/* pack */
+.pack-head{display:flex;gap:22px;align-items:flex-start}
+.pack-icon{flex:0 0 auto;width:104px;height:104px;border-radius:26px;display:grid;place-items:center;font-size:50px;box-shadow:inset 0 -8px 0 rgba(0,0,0,.08)}
+.pack-head .eyebrow{margin-top:4px}
+.pack-head h2{font-size:clamp(30px,4vw,48px);font-weight:900;margin:6px 0 4px;line-height:1.12}
+.pack-head .en{font-size:18px;color:var(--muted)}
+.pack-score{margin-left:auto;flex:0 0 auto;text-align:center;background:var(--coral-soft);border-radius:22px;padding:14px 18px;min-width:104px}
+.pack-score b{display:block;font-size:34px;font-style:italic;font-family:Georgia,"Times New Roman",serif;line-height:1}
+.pack-score span{font-size:13px;color:var(--muted)}
+.lead-box{margin:30px 0 8px;background:var(--mint-soft);border-left:6px solid var(--mint);border-radius:22px;padding:20px 26px;font-size:17px;line-height:1.85}
+.sec{display:flex;align-items:center;gap:14px;margin:34px 0 16px}
+.sec i{width:46px;height:46px;border-radius:14px;background:var(--coral-soft);display:grid;place-items:center;font-style:normal;font-size:22px}
+.sec h3{margin:0;font-size:24px;font-weight:900}
+.bul{margin:0;padding-left:22px;font-size:17px;line-height:1.9}
+.bul li{margin:4px 0}
+.words{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.word{text-align:left;border:2px solid var(--card-line);background:var(--card);border-radius:20px;padding:16px 18px;cursor:pointer;transition:border-color .2s,transform .12s}
+.word:hover{border-color:var(--coral)}
+.word.say{transform:scale(.98);border-color:var(--coral)}
+.word b{display:block;font-size:21px;font-weight:700}
+.word .pos{display:block;font-size:14px;font-weight:700;color:var(--coral-ink);margin:4px 0 6px}
+.word .zh{display:block;font-size:16px;color:var(--muted)}
+.word .col{display:block;font-size:13px;color:var(--muted);margin-top:8px;border-top:1px dashed var(--card-line);padding-top:8px}
+.say-note{font-size:13px;color:var(--muted);margin:12px 0 0}
+.phrases{display:grid;grid-template-columns:1fr 1fr;column-gap:28px}
+.phrase{padding:14px 0;border-bottom:1px solid var(--card-line)}
+.phrase b{display:block;font-size:19px;font-weight:700}
+.phrase span{font-size:15px;color:var(--muted)}
+.pattern{background:var(--gold-soft);border-radius:22px;padding:20px 24px;margin-bottom:14px}
+.pattern code{display:inline-block;font-family:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;font-weight:700;font-size:16px;color:#8a5a12;background:var(--sheet);border-radius:10px;padding:6px 12px}
+.pattern p{margin:12px 0 0;font-size:16px;line-height:1.75}
+.pattern blockquote{margin:10px 0 0;padding-left:14px;border-left:4px solid #e9c46a;font-style:italic;font-size:16px;line-height:1.7}
+.tasks{display:grid;gap:14px}
+.task{display:flex;align-items:center;gap:18px;width:100%;text-align:left;border:2px solid var(--card-line);background:var(--card);border-radius:22px;padding:18px 22px;cursor:pointer;transition:border-color .2s}
+.task:hover{border-color:var(--coral)}
+.task .num{flex:0 0 auto;width:52px;height:52px;border-radius:16px;background:var(--coral-soft);color:var(--coral-ink);font-weight:700;font-size:20px;display:grid;place-items:center}
+.task.done .num{background:var(--gold-soft);color:var(--gold)}
+.task .tt{flex:1;min-width:0}
+.task .tt b{display:block;font-size:20px}
+.task .tt b span{color:var(--muted);font-weight:500;margin-left:10px;padding-left:10px;border-left:2px solid var(--coral)}
+.task .tt small{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+.task .st{flex:0 0 auto;font-weight:700;font-size:15px;color:var(--coral-ink)}
+.task .st.ok{color:var(--ok)}
+.chip-wrong{border:0;background:var(--bad-soft);color:var(--bad);font-weight:700;font-size:14px;border-radius:99px;padding:6px 12px;cursor:pointer;margin-left:8px}
+
+/* quiz */
+.qhead{display:flex;justify-content:space-between;gap:18px}
+.qmeta{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.pill{font-size:13px;font-weight:700;background:var(--gold-soft);color:#9a6b12;border-radius:99px;padding:5px 12px}
+.pill.re{background:var(--bad-soft);color:var(--bad)}
+.qhead h2{font-size:clamp(30px,4.2vw,50px);font-weight:900;margin:14px 0 6px;line-height:1.1}
+.qhead .desc{font-size:16px;color:var(--muted);margin:0}
+.qcount{text-align:right;font-size:16px;color:var(--muted);flex:0 0 auto;line-height:1.6}
+.streak{display:inline-block;margin-top:8px;background:var(--coral-soft);border-radius:99px;padding:5px 12px;font-size:14px;font-weight:700;color:var(--coral-ink)}
+.segs{display:flex;gap:8px;margin:26px 0 22px}
+.segs i{flex:1;height:7px;border-radius:99px;background:var(--track)}
+.segs i.on{background:linear-gradient(90deg,#eab07a,var(--coral))}
+.segs i.ok{background:var(--mint)}
+.segs i.bad{background:#e79a8a}
+.concept{background:var(--gold-soft);border-radius:22px;padding:16px 24px;margin-bottom:24px}
+.concept b{display:block;font-size:13px;letter-spacing:.06em;color:#9a6b12;margin-bottom:4px}
+.concept p{margin:0;font-size:16px;line-height:1.7}
+.passage{background:var(--card);border:2px solid var(--card-line);border-radius:22px;padding:18px 24px;font-size:16px;line-height:1.95;max-height:260px;overflow:auto;margin-bottom:22px}
+.passage p{margin:0 0 10px}
+.passage .gap{display:inline-block;min-width:64px;text-align:center;font-weight:700;color:var(--muted);border-bottom:2px solid var(--muted);margin:0 3px;padding:0 6px}
+.passage .gap.cur{color:var(--coral-ink);border-color:var(--coral);background:var(--coral-soft);border-radius:6px 6px 0 0}
+.qtext{font-size:clamp(22px,2.8vw,32px);font-weight:700;line-height:1.5;margin:0 0 8px}
+.blank{display:inline-block;min-width:110px;border-bottom:3px solid var(--coral);margin:0 6px;vertical-align:baseline;height:1em}
+.lt{color:var(--coral-ink)}
+.keys{font-size:14px;color:var(--muted);margin:0 0 20px}
+.opts{display:grid;gap:12px}
+.opt{display:flex;align-items:center;gap:16px;width:100%;text-align:left;border:2px solid var(--card-line);background:var(--card);border-radius:20px;padding:14px 20px;font-size:18px;cursor:pointer;transition:border-color .15s}
+.opt:hover:not([disabled]){border-color:var(--coral)}
+.opt .k{flex:0 0 auto;width:40px;height:40px;border-radius:12px;background:var(--coral-soft);color:var(--coral-ink);font-weight:700;display:grid;place-items:center}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.ok .k{background:var(--ok);color:#fff}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt.bad .k{background:var(--bad);color:#fff}
+.opt[disabled]{cursor:default}
+.typ{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch}
+.typ input{flex:1;min-width:220px;font:inherit;font-size:22px;color:var(--ink);background:var(--card);border:2px solid var(--card-line);border-radius:18px;padding:14px 18px}
+.typ input:focus{outline:none;border-color:var(--coral)}
+.typ input.ok{border-color:var(--ok);background:var(--ok-soft)}
+.typ input.bad{border-color:var(--bad);background:var(--bad-soft)}
+.hintline{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 16px;font-size:16px;color:var(--muted)}
+.hintline .zh{background:var(--mint-soft);color:var(--ink);border-radius:99px;padding:5px 14px;font-weight:700}
+.hintline .mask{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.18em;font-size:18px;color:var(--ink)}
+.more{border:0;background:var(--gold-soft);color:#9a6b12;border-radius:99px;padding:6px 14px;font-weight:700;cursor:pointer}
+.ordbox{min-height:76px;border:2px dashed var(--card-line);border-radius:20px;padding:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;background:var(--card)}
+.ordbox.ok{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.ordbox.bad{border-style:solid;border-color:var(--bad);background:var(--bad-soft)}
+.ordbox .ph{color:var(--muted);font-size:15px;padding:0 8px}
+.pool{display:flex;flex-wrap:wrap;gap:10px;min-height:52px}
+.chunk{border:2px solid var(--card-line);background:var(--sheet);border-radius:14px;padding:10px 16px;font-size:18px;cursor:pointer;touch-action:none}
+.chunk:hover{border-color:var(--coral)}
+.ordbox .chunk{background:var(--coral-soft);border-color:transparent}
+.chunk.dragging{opacity:.4}
+.fb{margin-top:20px;border-radius:20px;padding:16px 22px;font-size:16px;line-height:1.75}
+.fb.ok{background:var(--ok-soft)}
+.fb.bad{background:var(--bad-soft)}
+.fb b{font-size:17px}
+.fb.ok b{color:var(--ok)}
+.fb.bad b{color:var(--bad)}
+.res-big{display:flex;gap:16px;flex-wrap:wrap;margin:26px 0}
+.res-big div{flex:1;min-width:150px;background:var(--card);border:2px solid var(--card-line);border-radius:22px;padding:18px 22px}
+.res-big b{display:block;font-size:34px;font-weight:900;font-variant-numeric:tabular-nums}
+.res-big span{font-size:14px;color:var(--muted)}
+.wrong-list{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.wrong-list li{background:var(--bad-soft);border-radius:16px;padding:12px 18px;font-size:15px;line-height:1.7}
+.wrong-list li b{color:var(--ok)}
+
+.legend{position:fixed;z-index:3;right:calc(20px + env(safe-area-inset-right,0px));top:calc(80px + env(safe-area-inset-top,0px));background:var(--panel);
+  border-radius:18px;padding:12px 16px;font-size:13px;box-shadow:var(--shadow),inset 0 0 0 1px var(--line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.legend[hidden]{display:none}
+.legend b{display:block;font-size:13px;margin-bottom:6px}
+.legend div{display:flex;align-items:center;gap:10px;margin:4px 0;color:var(--muted)}
+.legend svg{width:40px;height:8px;flex:0 0 auto}
+a.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.tbl-wrap{overflow-x:auto;border:2px solid var(--card-line);border-radius:20px;background:var(--card)}
+.ltable{width:100%;border-collapse:collapse;font-size:15px;min-width:560px}
+.ltable th,.ltable td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--card-line);white-space:nowrap}
+.ltable tr:last-child td{border-bottom:0}
+.ltable th{font-size:13px;color:var(--muted);font-weight:700}
+.ltable td.num{font-variant-numeric:tabular-nums}
+.st-ok{color:var(--ok);font-weight:700}.st-bad{color:var(--bad);font-weight:700}.st-none{color:var(--muted)}
+.cert-img{width:100%;border-radius:18px;box-shadow:var(--shadow);display:block;margin-top:20px}
+.left-list{margin:18px 0 0;padding-left:22px;font-size:16px;line-height:1.9;columns:2}
+.pend{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 0;background:var(--gold-soft);border-radius:16px;padding:12px 16px;font-size:15px}
+@media (max-width:860px){
+  .words{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr}
+  .fields{grid-template-columns:1fr 1fr}
+  .fields .field:last-child{grid-column:1/-1}
+}
+@media (max-width:720px){
+  .index{padding:16px 18px 14px;border-radius:20px;width:min(300px,calc(100vw - 32px));left:16px;top:calc(16px + env(safe-area-inset-top,0px))}
+  .index h1{font-size:22px;margin:8px 0 4px}
+  .lede{display:none}
+  .tools{top:auto;bottom:calc(76px + env(safe-area-inset-bottom,0px));right:16px;flex-direction:column}
+  .player{display:none}
+  .clock{left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));justify-content:space-between}
+  .hint{display:none}
+  .tag{padding:5px 10px 6px;border-radius:12px}
+  .tag span{font-size:12px}
+  .scrim{padding:calc(8px + env(safe-area-inset-top,0px)) 8px calc(8px + env(safe-area-inset-bottom,0px))}
+  .sheet{border-radius:24px}
+  .sheet-body{padding:28px 20px 16px}
+  .sheet-foot{padding:12px 20px 20px;flex-wrap:wrap}
+  .sheet-foot .btn{flex:1}
+  .pack-head{flex-wrap:wrap}
+  .pack-icon{width:72px;height:72px;font-size:36px;border-radius:20px}
+  .pack-score{margin-left:0}
+  .phrases{grid-template-columns:1fr}
+  .qhead{flex-direction:column}
+  .qcount{text-align:left}
+  .login .badge{width:76px;height:76px;border-radius:22px}
+}
+@media (max-width:720px){
+  .tool{width:44px;height:44px}
+  .legend{top:auto;right:72px;bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .left-list{columns:1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="scene" aria-label="3D 複習島地圖"></div>
+<div id="tags"></div>
+
+<section class="index" aria-labelledby="ttl">
+  <p class="eyebrow">THE REVIEW INDEX</p>
+  <h1 id="ttl">第二次段考複習島</h1>
+  <p class="lede">走進 L4–L6、R2 與 Live 雜誌群島，每完成一關，島上就多亮一顆水晶。</p>
+  <div class="bar" role="progressbar" aria-label="總進度" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0"><i id="barFill"></i></div>
+  <div class="meta"><span id="doneTxt">0/20 個任務已完成</span><span id="pctTxt">0%</span></div>
+</section>
+
+<nav class="tools" aria-label="地圖工具">
+  <button class="tool" id="btnHome" title="回到全景" aria-label="回到全景">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"/><path d="M6 10v9h12v-9"/></svg>
+  </button>
+  <button class="tool" id="btnBird" aria-pressed="false" title="鳥瞰地圖" aria-label="鳥瞰地圖">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg>
+  </button>
+  <button class="tool" id="btnTags" aria-pressed="true" title="顯示島嶼名牌" aria-label="顯示島嶼名牌">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H13l-4 4v-4H4z"/></svg>
+  </button>
+  <button class="tool" id="btnRoutes" aria-pressed="false" title="學習路線" aria-label="學習路線">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6a3 3 0 0 0 0-6h-4a3 3 0 0 1 0-6h6" stroke-dasharray="2 2.6"/></svg>
+  </button>
+  <button class="tool" id="btnLog" title="City Log 學習日誌" aria-label="City Log 學習日誌">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/><path d="M9 8h6"/></svg>
+  </button>
+  <button class="tool" id="btnCert" title="完成證書" aria-label="完成證書">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="M9 13.5 7.5 21l4.5-2.5 4.5 2.5-1.5-7.5"/></svg>
+  </button>
+  <button class="player" id="btnPlayer" title="玩家資料"><span class="dot"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></span><span id="playerName">登島</span></button>
+</nav>
+<div class="legend" id="legend" hidden><b>學習路線</b>
+  <div><svg viewBox="0 0 40 8"><line x1="3" y1="4" x2="37" y2="4" stroke="#e07a55" stroke-width="4" stroke-linecap="round"/></svg>已點亮</div>
+  <div><svg viewBox="0 0 40 8"><line x1="3" y1="4" x2="37" y2="4" stroke="#e07a55" stroke-width="4" stroke-linecap="round" stroke-dasharray="0.5 6"/></svg>有錯題待重練</div>
+  <div><svg viewBox="0 0 40 8"><line x1="3" y1="4" x2="37" y2="4" stroke="#e07a55" stroke-width="4" stroke-dasharray="8 6"/></svg>尚未開始</div>
+</div>
+
+<div class="clock" role="group" aria-label="島上時間">
+  <button class="play" id="btnPlay" aria-label="暫停時間流動" title="暫停時間流動">
+    <svg id="icoPause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+    <svg id="icoPlay" viewBox="0 0 24 24" fill="currentColor" hidden><path d="M7 5v14l12-7z"/></svg>
+  </button>
+  <time id="clockTxt">10:00</time>
+  <button class="jump" data-min="360">清晨 06</button>
+  <button class="jump" data-min="720">白天 12</button>
+  <button class="jump" data-min="1080">黃昏 18</button>
+  <button class="jump" data-min="1260">夜晚 21</button>
+</div>
+
+<div class="hint"><span class="mouse">拖曳旋轉，右鍵拖曳平移，滾輪縮放，點小島開啟懶人包</span><span class="touch">單指旋轉，雙指縮放平移，點小島開啟懶人包</span></div>
+<div class="scrim" id="scrim" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="loader" id="loader"><p>正在組合複習小島…<small>載入地圖、題目與光線</small></p></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =====================================================================
+   試算表串接：把 Apps Script「網頁應用程式」的網址貼在下面的引號裡。
+   留空白時不會上傳，成績只存在學生自己的瀏覽器。
+   ===================================================================== */
+window.SHEET_URL='';
+</script>
+<script>
+/* =====================================================================
+   CONTENT: lazy packs + question bank
+   q types: mc {q,o,a}, type {q,hint,a:[...]}, order {c:[chunks in order]}
+   cloze levels: {passage, qs:[{b,tag,o,a,clue}]}
+   ===================================================================== */
+var DATA={
+L4:{name:'嗅探犬氣味研究站',en:'Sniffing Out More Than Just Bones',icon:'🐕',tint:'#f3dcc4',
+ lead:'一篇介紹「嗅探犬」的說明文：狗的嗅覺比人類靈敏得多，除了找毒品，還能找病樹、預測人類疾病。',
+ learn:['主旨：狗的嗅覺遠比人類靈敏，嗅探犬能用敏銳的鼻子幫人類做很多事。',
+  '例子一：屏東公園用狗找出得了褐根病（brown root rot）的樹；狗找到後坐在樹旁，等訓練師給點心當獎勵，工人再把樹挖掉。',
+  '例子二：58 歲的糖尿病患 Maria Tello 半夜血糖過低，狗狗 Malachi 叫醒她、衝去拿藥；那一年又救了她四次。',
+  '原理：疾病造成化學變化、產生特殊氣味；訓練師讓狗反覆接觸這些氣味，並教牠用「坐下」或「吠叫」當作警示。'],
+ words:[['sensitive','adj.','敏感的；靈敏的','be sensitive to'],['keen','adj.','敏銳的；熱衷的','be keen on V-ing'],['detect','v.','偵測到；察覺','detect a change'],['item','n.','一項物品',''],
+  ['accomplish','v.','達成','accomplishment n. 成就'],['disease','n.','疾病','suffer from a disease'],['infected','adj.','遭感染的','be infected with'],['locate','v.','找到…的位置','be located in/on/at'],
+  ['reward','n./v.','獎勵；獎賞','reward sb. with'],['ability','n.','能力','have the ability to VR'],['predict','v.','預測','predict that S + V'],['manage','v.','設法做到；管理','manage to VR'],
+  ['create','v.','創造','creative / creativity'],['expose','v.','使接觸；使暴露','be exposed to'],['perform','v.','做某事；表演','perform daily tasks'],['behavior','n.','行為','animal behavior'],
+  ['alert','n./adj.','警示；警覺的','stay alert to'],['complete','adj./v.','完成的；完成',''],['assign','v.','指派','on an assignment'],['specific','adj.','特定的','specific reason']],
+ phrases:[['due to','因為'],['all of a sudden','突然間'],['turn out','結果是'],['come across','偶然遇到'],['carry out','執行'],['dig out','挖出'],['be used for + V-ing','用來做…'],['in this way','以這樣的方式']],
+ patterns:[{f:'…N + who(m) / which / that…',n:'限定用法：人用 who/that，物用 which/that；當受詞時可省略。',ex:'Officials use trained dogs to find trees that have brown root rot disease.'},
+  {f:'…N, + which / who(m)…',n:'非限定用法：加逗點補充說明，不能用 that，也不能省略。',ex:'Maria Tello, who was a 58-year-old woman with diabetes, was asleep one night.'},
+  {f:'Here + V + N',n:'Here 放句首、主詞是名詞時要倒裝，動詞單複數看後面的名詞。',ex:'Here are a few more interesting ways that these amazing animals can help humans out.'}],
+ tips:['非限定子句前要加逗點，而且不能用 that。','due to 後面接名詞或 V-ing，不接子句。','It turned out that + 子句：結果是…','Here are + 複數名詞／Here is + 單數名詞。'],
+ levels:[
+  {name:'單字練功',en:'Scent words',desc:'跟著嗅探犬記單字。',qs:[
+   {t:'mc',q:'A dog’s sense of smell is far more ___ than a human’s.',o:['specific','complete','sensitive','ancient'],a:2},
+   {t:'mc',q:'Some dogs are trained to ___ hidden drugs at airports.',o:['reward','detect','assign','perform'],a:1},
+   {t:'mc',q:'Once the dogs ___ an infected tree, they sit down beside it.',o:['locate','predict','expose','manage'],a:0},
+   {t:'mc',q:'The trainer hands the dog a treat as a ___.',o:['disease','behavior','item','reward'],a:3},
+   {t:'mc',q:'Sitting down or barking is a kind of ___ that dogs perform as an alert.',o:['ability','behavior','creation','location'],a:1},
+   {t:'mc',q:'Once their training is ___, sniffer dogs are assigned to carry out duties.',o:['keen','infected','complete','sensitive'],a:2},
+   {t:'type',q:'Malachi could p______ that Maria’s blood sugar would drop.',hint:'預測',a:['predict']},
+   {t:'type',q:'Workers dig out the i______ trees before they fall.',hint:'遭感染的',a:['infected']},
+   {t:'type',q:'Trainers need to e______ their dogs to these smells many times.',hint:'使接觸',a:['expose']},
+   {t:'type',q:'The owl has such a k______ sense of hearing that it can hunt in the dark.',hint:'敏銳的',a:['keen']},
+   {t:'type',q:'Lynn’s grandmother is suffering from a serious heart d______.',hint:'疾病',a:['disease']},
+   {t:'type',q:'Kyle m______ to lose twenty pounds by exercising every day.',hint:'成功做到（過去式）',a:['managed']}]},
+  {name:'片語活用',en:'Phrase trail',desc:'把課文片語放回句子裡。',qs:[
+   {t:'mc',q:'___ their keen sense of smell, the dogs can detect infected trees.',o:['Instead of','Due to','Except for','In spite of'],a:1},
+   {t:'mc',q:'___, her dog Malachi opened its eyes and got up.',o:['All of a sudden','For a while','As always','Over time'],a:0},
+   {t:'mc',q:'It ___ that Malachi saved Maria’s life four more times that year.',o:['came across','carried out','dug out','turned out'],a:3},
+   {t:'mc',q:'The dogs sit down or bark when they ___ these special smells.',o:['carry out','come across','hand out','turn out'],a:1},
+   {t:'mc',q:'After training, sniffer dogs are assigned to ___ specific duties.',o:['give up','end up','carry out','pick up'],a:2},
+   {t:'type',q:'Workers d___ o___ these trees before they fall and hurt people.',hint:'挖出',a:['dig out']},
+   {t:'type',q:'This oil can be u___ f___ relaxing your stiff muscles.',hint:'用來',a:['used for']},
+   {t:'mc',q:'Malachi saved Maria’s life ___ four more times.',o:['by the way','on the way','in this way','in the way'],a:2},
+   {t:'mc',q:'Here are a few ways these amazing animals can ___ humans ___.',o:['give … up','pick … up','carry … out','help … out'],a:3},
+   {t:'type',q:'Who knows how their sense of smell will be u___ t___ us in the future?',hint:'對…有用',a:['useful to']}]},
+  {name:'句型實戰',en:'Who, which, that',desc:'限定與非限定關係子句，逗點是關鍵。',qs:[
+   {t:'mc',q:'Dogs are able to smell things ___ we can’t.',o:['who','what','whose','that'],a:3},
+   {t:'mc',q:'Maria Tello ___ was a 58-year-old woman with diabetes, was asleep.',o:[', who','who',', that','that'],a:0},
+   {t:'mc',q:'Sniffer dogs ___ use their keen sense of smell, can detect hidden drugs.',o:['that',', that','which',', which'],a:3},
+   {t:'mc',q:'I haven’t talked to the man ___ you came across last night.',o:['whose','which','where','whom'],a:3},
+   {t:'mc',q:'Many tourists visit Kenting ___ a popular spot in southern Taiwan.',o:['which is',', which is','who is',', that is'],a:1},
+   {t:'mc',q:'Here ___ a few more interesting ways that these animals help us.',o:['is','be','are','being'],a:2},
+   {t:'type',q:'Officials use trained dogs to find trees ___ have brown root rot disease.',hint:'關係代名詞',a:['that','which']},
+   {t:'type',q:'John Wayne, ___ I had last seen in October, wrote to me from Germany.',hint:'非限定、受格',a:['whom','who']},
+   {t:'type',q:'Taylor has a few friends ___ like to play badminton after school.',hint:'關係代名詞',a:['who','that']},
+   {t:'order',zh:'京都是日本的舊都，有許多歷史建築。',c:['Kyoto,','which is','the old capital of Japan,','has many historic buildings.']},
+   {t:'order',zh:'Carol 在機場偶遇的那位年輕人是我表哥。',c:['The young man','who Carol came across','at the airport','was my cousin.']},
+   {t:'order',zh:'我上週從圖書館借的書有很有趣的資訊。',c:['The book','that I borrowed','from the library','contains','interesting information.']}]},
+  {name:'克漏字',en:'The sniffer story',desc:'改寫課文，挑出最適合的字。',cloze:true,
+   passage:'Have you ever noticed that dogs can smell things that we can’t? This is because a dog’s sense of smell is far more sensitive than a human’s. {1}, some dogs are specially trained to become “sniffer dogs.” These dogs, {2} use their keen noses to detect hidden drugs, can also help humans in many other ways.\n\nIn Pingtung, park officials use trained dogs to find trees with brown root rot disease. Once a dog locates such a tree, it sits down beside it {3} its trainer hands it a treat as a reward. Workers then dig out the tree before it falls and hurts people. Since officials have realized how useful these dogs can be, parks across Taiwan are now inviting them to help.\n\nSniffer dogs have also been trained to predict the onset of certain diseases in humans. One night, Maria Tello, a woman with diabetes, was asleep. {4}, her dog Malachi got up. It could sense that Maria’s blood sugar was dropping to a dangerously low level, so it woke her up and rushed to get her medicine. It turned out that Malachi saved her life four more times that year.\n\nHow do the dogs do it? Diseases cause chemical changes, which create special odors. Trainers expose their dogs to these smells many times. The dogs are then taught to sit down or bark when they {5} these smells. Dogs really are our best friends. Who knows in what other ways they will help us in the future?',
+   qs:[{b:1,tag:'轉承詞',o:['However','For this reason','On the other hand','Instead'],a:1},
+    {b:2,tag:'非限定關係代名詞',o:['that','what','which','whom'],a:2},
+    {b:3,tag:'連接詞',o:['until','unless','since','though'],a:0},
+    {b:4,tag:'片語',o:['Over time','As always','For a while','All of a sudden'],a:3},
+    {b:5,tag:'片語',o:['carry out','come across','turn out','dig out'],a:1}]}
+ ]},
+
+L5:{name:'海洋回收小站',en:'The Life of a Plastic Bag',icon:'♻️',tint:'#cfe6df',
+ lead:'一篇用「塑膠袋」當主角的第一人稱故事：從商店、海灘、大海、魚肚子，最後被學生撿起、要送去回收。',
+ learn:['旅程順序：便利商店 → 孩子帶去海灘野餐 → 天黑被留下、被風吹進海裡 → 被塑膠杯盤吸管包圍 → 被大魚吞下（魚死掉）→ 被浪打上岸 → 被淨灘學生用夾子撿起 → 要被送去回收廠。',
+  '老師的提醒：亂丟垃圾讓塑膠進入海洋 → 被海洋生物吃下 → 我們吃海鮮時，塑膠裡的有毒物質也進到身體。',
+  '塑膠袋的心聲：人類製造塑膠讓生活更好，卻誤用它讓大家的生活更糟；它希望下一輩子被好好使用。'],
+ words:[['plastic','adj./n.','塑膠的；塑膠','be made of plastic'],['convenience','n.','便利','for the convenience of the public'],['eagerly','adv.','渴望地','be eager for sth.'],['surround','v.','圍繞','be surrounded by'],
+  ['drift','v.','漂流','drift toward sth.'],['envy','v./n.','羨慕','with envy'],['crowded','adj.','擁擠的','be crowded with'],['obviously','adv.','顯然','It is obvious that S + V'],
+  ['product','n.','產品','produce v. 製造'],['consume','v.','吃喝；消耗','consumer n. 消費者'],['poisonous','adj.','有毒的','be poisonous to'],['substance','n.','物質','chemical substance'],
+  ['recycling','n.','回收','recycle v.'],['harm','n./v.','傷害','do harm to / be harmful to'],['environment','n.','自然環境','natural environment'],['properly','adv.','適當地','at the proper place and time']],
+ phrases:[['come along','出現；跟隨'],['pack…up','收拾'],['on one’s own','獨自'],['for a while','一陣子'],['end up','最後結果是'],['according to','根據'],['be tired of','對…感到厭倦'],['more and more','愈來愈多']],
+ patterns:[{f:'S + make / have / let + O + VR',n:'使役動詞後面接原形動詞。make 迫使、have 吩咐、let 允許。',ex:'When we eat seafood, the poisonous substances make us feel sick.'},
+  {f:'make oneself understood',n:'受詞和動作是「被理解」的關係，所以用過去分詞 understood。',ex:'I spoke slowly to make myself understood.'},
+  {f:'because + S + V / because of + N',n:'兩者都表示原因；because 接子句，because of 接名詞。',ex:'Because of all the littering, a lot of plastic products end up in the ocean.'}],
+ tips:['使役動詞後面不能接 to V：let me go（○）let me to go（×）。','allow / ask / force 才要接 to V：allow me to go。','end up 後面接地點或 V-ing。','a few + 複數名詞：一些；few：幾乎沒有。'],
+ levels:[
+  {name:'單字練功',en:'Ocean words',desc:'跟著塑膠袋的旅程記單字。',qs:[
+   {t:'mc',q:'I stayed in the store and waited ___ to be used.',o:['obviously','eagerly','properly','suddenly'],a:1},
+   {t:'mc',q:'I was ___ by plastic cups, plates, and straws.',o:['drifted','consumed','surrounded','envied'],a:2},
+   {t:'mc',q:'The bag ___ in the sea for days, following the currents.',o:['drifted','crowded','harmed','recycled'],a:0},
+   {t:'mc',q:'I started to ___ the birds, who were flying so high and free.',o:['poison','produce','surround','envy'],a:3},
+   {t:'mc',q:'Plastic products are ___ by different sea creatures.',o:['located','consumed','predicted','assigned'],a:1},
+   {t:'mc',q:'___, we weren’t that nutritious, because the fish died.',o:['Eagerly','Properly','Obviously','Firmly'],a:2},
+   {t:'type',q:'The poisonous s______ from the plastic end up inside us.',hint:'物質（複數）',a:['substances']},
+   {t:'type',q:'The humans are going to take us to a r______ plant.',hint:'回收',a:['recycling']},
+   {t:'type',q:'Chocolate is delicious, but it can be p______ to dogs.',hint:'有毒的',a:['poisonous']},
+   {t:'type',q:'I’m tired of causing harm to the e______.',hint:'自然環境',a:['environment']},
+   {t:'type',q:'I hope my future owner will use me p______ in my next life.',hint:'適當地',a:['properly']},
+   {t:'type',q:'More and more of us were swallowed until it got quite c______ inside.',hint:'擁擠的',a:['crowded']}]},
+  {name:'片語活用',en:'Phrase drift',desc:'片語跟著海流漂回句子。',qs:[
+   {t:'mc',q:'Finally, some kids ___, bought some snacks, and took me to the beach.',o:['packed up','came along','ended up','turned out'],a:1},
+   {t:'mc',q:'When it was getting dark, they ___ everything ___ and left.',o:['carried … out','dug … out','packed … up','came … across'],a:2},
+   {t:'mc',q:'I floated helplessly in the water ___.',o:['as always','close to','due to','for a while'],a:3},
+   {t:'mc',q:'Because of littering, a lot of plastic products ___ in the ocean.',o:['end up','come along','take action','pay a visit'],a:0},
+   {t:'mc',q:'___ a plastic bottle nearby, the humans will take us to a recycling plant.',o:['Because','In my opinion','According to','Instead of'],a:2},
+   {t:'type',q:'Suddenly I was in the sea all o___ m___ o___.',hint:'獨自',a:['on my own']},
+   {t:'type',q:'I’m t___ o___ floating around and killing fish.',hint:'對…感到厭倦',a:['tired of']},
+   {t:'type',q:'M___ a___ m___ of us were swallowed by the fish.',hint:'愈來愈多',a:['more and more']}]},
+  {name:'句型實戰',en:'Make, have, let',desc:'使役動詞與 because／because of。',qs:[
+   {t:'mc',q:'They packed everything up and ___ me stay there alone!',o:['got','let','allowed','wanted'],a:1},
+   {t:'mc',q:'The poisonous substances end up inside us and make us ___ sick.',o:['to feel','feeling','feel','felt'],a:2},
+   {t:'mc',q:'To improve our English, our teacher had us ___ twenty new words every day.',o:['to memorize','memorizing','memorized','memorize'],a:3},
+   {t:'mc',q:'___ all the littering, a lot of plastic products end up in the ocean.',o:['Because of','Because','Since','As'],a:0},
+   {t:'mc',q:'The fish died after a few days ___ we weren’t that nutritious.',o:['because of','due to','owing to','because'],a:3},
+   {t:'mc',q:'Which sentence is correct?',o:['Jenny’s father let her to go to camp.','Mom made me cleaning my room.','The boss had his driver pick him up.','The police made Tim to show his license.'],a:2},
+   {t:'mc',q:'I spoke slowly to make myself ___.',o:['understand','understanding','understood','to understand'],a:2},
+   {t:'type',q:'The coach let the boy ___ (swim) in the shallow end of the pool.',hint:'用括號內的字',a:['swim']},
+   {t:'type',q:'The teacher made the students ___ (stay) at the library after school.',hint:'用括號內的字',a:['stay']},
+   {t:'type',q:'Nina didn’t go on a picnic ___ ___ the bad weather.',hint:'因為（兩字）',a:['because of']},
+   {t:'order',zh:'醫生要我一天吃四次藥。',c:['The doctor','had me','take medicine','four times a day.']},
+   {t:'order',zh:'有毒物質最後進到我們體內，讓我們生病。',c:['The poisonous substances','end up inside us','and make us','feel sick.']},
+   {t:'order',zh:'因為班機延誤，Yvonne 少了兩天假期。',c:['Because of','the flight delays,','Yvonne lost','two days','from her holiday.']}]},
+  {name:'克漏字',en:'A bag’s long journey',desc:'改寫課文，挑出最適合的字。',cloze:true,
+   passage:'I am a plastic bag. When I was very young, I was sent from a factory to a convenience store, where I waited eagerly to be used. Finally, some kids {1}, bought some snacks, and took me to the beach for a picnic. When it was getting dark, they packed everything up and {2} me stay there alone. The wind started to howl, and suddenly I was in the sea all on my own.\n\nI floated helplessly in the water {3} a while. I was surrounded by plastic cups, plates, and straws. Then I went down a tunnel into a dark chamber. I had been swallowed by a huge fish! More and more trash was swallowed until it got quite crowded inside. The fish died after a few days {4} we weren’t that nutritious.\n\nLater, a big wave threw me onto the shore, and some schoolchildren picked me up. Their teacher explained that because of littering, a lot of plastic ends up in the ocean. Sea creatures eat it, and when we eat seafood, the poisonous substances make us feel sick.\n\nNow I’m going to a recycling plant. Humans produce us to make their lives better. {5}, they misuse us and make everyone’s life worse. I’m tired of floating around and causing harm to the environment. I really hope my next owner will use me properly.',
+   qs:[{b:1,tag:'片語',o:['ended up','came along','packed up','turned out'],a:1},
+    {b:2,tag:'使役動詞',o:['allowed','leave','let','letting'],a:2},
+    {b:3,tag:'片語介系詞',o:['since','for','during','until'],a:1},
+    {b:4,tag:'連接詞',o:['because of','although','so','because'],a:3},
+    {b:5,tag:'轉承詞',o:['Therefore','For example','However','Besides'],a:2}]}
+ ]},
+
+L6:{name:'自由象徵博物館',en:'Built for Freedom: The Statue of Liberty',icon:'🗽',tint:'#d3e9e2',
+ lead:'一篇介紹自由女神像的描寫文：它的由來、外觀的變化，以及每個部位代表的意義。',
+ learn:['1886 年 10 月 28 日，近百萬人冒雨到貝德羅島（後改名自由島）看雕像揭幕。',
+  '由來：法國送給美國的禮物，慶祝美國脫離英國獨立一百週年。總高 305 英尺，雕像本身 151 英尺。',
+  '顏色：銅製表面原本是紅棕色，長年暴露在空氣中氧化，變成綠色。',
+  '象徵：左手石板刻著 1776 年 7 月 4 日；右手火炬照亮通往自由的路；王冠七根尖刺代表太陽光芒；羅馬風格長袍來自自由女神 Libertas；腳邊斷鍊代表奴隸制度結束。'],
+ words:[['freedom','n.','自由','give sb. the freedom to VR'],['statue','n.','雕像',''],['remove','v.','移除','remove A from B'],['celebration','n.','慶祝（活動）','in celebration of'],
+  ['independence','n.','獨立','achieve independence from'],['monument','n.','紀念碑','monument to'],['symbolize','v.','象徵','be a symbol of / be symbolic of'],['firmly','adv.','牢固地；堅定地','firmly close sth.'],
+  ['represent','v.','作為…的象徵；代表','representation of'],['ancient','adj.','古代的','ancient history'],['slavery','n.','蓄奴制','be sold into slavery'],['unfair','adj.','不公平的','unfair treatment'],
+  ['treatment','n.','對待；待遇','fair/poor treatment'],['tourist','n.','遊客','tourist center / tourist attraction / tourism'],['attraction','n.','有吸引力的事物或地點','tourist attraction / attract A to B'],['landmark','n.','地標',''],
+  ['globe','n.','地球；世界','around the globe / global']],
+ phrases:[['even though','儘管'],['close to','將近'],['over time','隨著時間過去'],['pay a visit to','參觀；拜訪'],['as always','一直如此'],['in celebration','慶祝'],['present sth. to sb.','贈送'],['be exposed to','暴露於']],
+ patterns:[{f:'It is / was … that …',n:'強調句：把要強調的人、物、時間、地點放在中間。',ex:'It was on this day that the United States became independent.'},
+  {f:'so + adj./adv. + that + S + V',n:'so 後面接形容詞或副詞，表示「如此…以致於…」。',ex:'This outer layer has oxidized so much that it has turned green.'},
+  {f:'such (+ a/an) + adj. + N + that + S + V',n:'such 後面接名詞；單數可數名詞要加 a/an。',ex:'It is such a popular landmark that every visitor has heard of it.'}],
+ tips:['so 接形容詞或副詞，such 接名詞。','such a/an + 形容詞 + 單數名詞，順序不能錯。','強調句的 that 不能換成 which。','even though 後面接完整子句。'],
+ levels:[
+  {name:'單字練功',en:'Liberty words',desc:'走進博物館記單字。',qs:[
+   {t:'mc',q:'Bartholdi ___ the large French flag from the front of his creation.',o:['represented','removed','celebrated','symbolized'],a:1},
+   {t:'mc',q:'The statue celebrates America’s 100 years of ___ from Great Britain.',o:['slavery','treatment','independence','attraction'],a:2},
+   {t:'mc',q:'The full height of the ___ is 305 feet.',o:['monument','tourist','globe','celebration'],a:0},
+   {t:'mc',q:'The broken chains represent the end of ___ in the United States.',o:['freedom','landmark','tourism','slavery'],a:3},
+   {t:'mc',q:'Her robe in the ___ Roman style shows Bartholdi was inspired by Libertas.',o:['unfair','ancient','firm','global'],a:1},
+   {t:'mc',q:'A giant torch is held ___ in her right hand.',o:['eagerly','obviously','firmly','properly'],a:2},
+   {t:'type',q:'The tablet s______ a new and free America.',hint:'象徵（第三人稱）',a:['symbolizes','symbolises']},
+   {t:'type',q:'Seven spikes rise from the crown and r______ the rays of the sun.',hint:'代表',a:['represent']},
+   {t:'type',q:'The broken chains symbolize freedom from u______ treatment.',hint:'不公平的',a:['unfair']},
+   {t:'type',q:'The statue is one of America’s biggest tourist a______.',hint:'景點（複數）',a:['attractions']},
+   {t:'type',q:'It is such a popular l______ that every visitor has heard of it.',hint:'地標',a:['landmark']},
+   {t:'type',q:'She is a symbol of hope for visitors from around the g______.',hint:'世界',a:['globe']}]},
+  {name:'片語活用',en:'Phrase torch',desc:'用片語點亮火炬。',qs:[
+   {t:'mc',q:'___ it was a rainy day, close to a million people were out.',o:['Because','Even though','As always','Due to'],a:1},
+   {t:'mc',q:'___ a million people came out for their first look at the statue.',o:['Over time','Thanks to','Close to','Instead of'],a:2},
+   {t:'mc',q:'___, the copper surface has oxidized and turned green.',o:['Over time','All of a sudden','For a while','As always'],a:0},
+   {t:'mc',q:'Every visitor to New York City wants to ___ Liberty Island.',o:['come across','end up','carry out','pay a visit to'],a:3},
+   {t:'mc',q:'___, Lady Liberty stands tall and proud.',o:['Even though','As always','Close to','According to'],a:1},
+   {t:'type',q:'The crowds cheered and the soldiers fired their guns i___ c___.',hint:'慶祝',a:['in celebration']},
+   {t:'type',q:'The statue is a gift that France p___ t___ America.',hint:'贈送給',a:['presented to']},
+   {t:'type',q:'The outer layer has been e___ t___ the air for many years.',hint:'暴露於',a:['exposed to']},
+   {t:'type',q:'The broken chains lie a___ h___ f___.',hint:'在她的腳邊',a:['at her feet']},
+   {t:'type',q:'The torch symbolizes that Lady Liberty lights t___ w___ t___ freedom.',hint:'前往…的道路',a:['the way to']}]},
+  {name:'句型實戰',en:'It is…that, so…that',desc:'強調句與 so／such…that。',qs:[
+   {t:'mc',q:'___ was on this day ___ the United States became independent.',o:['This … that','That … which','It … that','It … but'],a:2},
+   {t:'mc',q:'It was Kevin ___ gave the little girl a teddy bear.',o:['which','that','what','whose'],a:1},
+   {t:'mc',q:'The outer layer has oxidized ___ much that it has turned green.',o:['so','such','very','too'],a:0},
+   {t:'mc',q:'It is ___ popular landmark that every visitor has heard of it.',o:['such a','so a','so','such'],a:0},
+   {t:'mc',q:'This is ___ that I can’t put it down.',o:['so an interesting book','a so interesting book','such interesting a book','such an interesting book'],a:3},
+   {t:'mc',q:'The discovery is ___ that it will change the future of human beings.',o:['such important','very important','so important','such importantly'],a:2},
+   {t:'type',q:'Philip drove ___ fast ___ nobody could catch up with him.',hint:'如此…以致於（兩字）',a:['so that']},
+   {t:'type',q:'It was in 1992 ___ I was born.',hint:'強調句',a:['that']},
+   {t:'type',q:'Mary made ___ a wonderful speech that everyone gave her a big hand.',hint:'so 或 such',a:['such']},
+   {t:'order',zh:'我就是在那家法國餐廳弄丟錢包的。',c:['It was','in the French restaurant','that','I lost my wallet.']},
+   {t:'order',zh:'它是如此受歡迎的地標，每位遊客都想來參觀。',c:['It is','such a popular landmark','that','every visitor','wants to visit it.']},
+   {t:'order',zh:'我太傻了，竟然相信你說的每一句話。',c:['I was','so stupid','that','I believed','everything you told me.']}]},
+  {name:'克漏字',en:'Lady Liberty',desc:'改寫課文，挑出最適合的字。',cloze:true,
+   passage:'On October 28, 1886, close to a million people came out to see the newest addition to New York City {1} it was a rainy day. When the French sculptor Bartholdi removed a large French flag from his latest creation, the crowds cheered and the soldiers fired their guns in celebration. Before their eyes stood the Statue of Liberty.\n\nThe statue is a gift {2} France presented to America to celebrate its one hundred years of independence from Great Britain. When it was first built, the statue’s copper surface was reddish-brown. {3}, the outer layer was exposed to the air and oxidized so much that it turned green.\n\nEach part of the statue has a special meaning. In her left hand, Lady Liberty holds a tablet with the date “July 4, 1776.” It was on this day {4} the United States became independent. The torch in her right hand symbolizes that she lights the way to freedom. The seven spikes on her crown represent the rays of the sun, and the broken chains at her feet represent the end of slavery.\n\nToday, the statue is {5} a popular landmark that every visitor to New York City wants to pay a visit to Liberty Island. As always, she stands tall and proud as a symbol of hope and freedom for people around the globe.',
+   qs:[{b:1,tag:'連接詞',o:['because','unless','even though','so that'],a:2},
+    {b:2,tag:'關係代名詞',o:['who','that','what','where'],a:1},
+    {b:3,tag:'片語轉承',o:['All of a sudden','As always','In addition','Over time'],a:3},
+    {b:4,tag:'強調句',o:['that','which','where','who'],a:0},
+    {b:5,tag:'so / such',o:['so','very','such','too'],a:2}]}
+ ]},
+
+R2:{name:'趣味交通實驗室',en:'Having Fun with Change',icon:'🚦',tint:'#f6dcd2',
+ lead:'一篇說明文：想讓人改掉壞習慣不容易，答案其實很簡單——讓改變變得好玩。',
+ learn:['開頭：大多數人都有想改的習慣，但改變不容易；答案是讓人「有樂趣」。',
+  '例子一：葡萄牙里斯本的「跳舞小紅人」紅綠燈，小紅人的舞步由附近小隔間裡的人表演，結果多了 81% 的行人願意停下來等紅燈。',
+  '例子二：瑞典斯德哥爾摩地鐵站把樓梯改成會發出聲音的鋼琴鍵，選擇走樓梯的人增加了 66%。',
+  '結論：讓日常活動變有趣，大家就樂意參與；這些改變能促進正面行為，也讓人微笑。'],
+ words:[['positive','adj.','正面的',''],['signal','n.','指示燈號',''],['improve','v.','改善','improve road safety'],['intersection','n.','十字路口',''],
+  ['actually','adv.','事實上',''],['pedestrian','n.','行人',''],['routine','n.','日常事務；例行公事','daily routine'],['experiment','n.','嘗試；實驗','conduct an experiment'],
+  ['escalator','n.','電扶梯',''],['ordinary','adj.','普通的',''],['motivate','v.','激勵','be motivated to VR'],['promote','v.','促進','promote positive behavior']],
+ phrases:[['for the better','好轉'],['take action','採取行動'],['put up','設立；設置'],['thanks to','幸虧'],['rather than','而非']],
+ patterns:[{f:'Introduction → Body → Conclusion',n:'說明文三段結構：開頭提出主旨，中間用例子支持，結尾回到主旨。',ex:'Fortunately, the answer, which is quite simple, is to let them have fun!'},
+  {f:'找代名詞與承接語',n:'Its、To achieve this、Each key 這類字都在指前面出現過的東西，空格前後要接得上。',ex:'Its dance moves were actually performed by a person in a nearby booth.'}],
+ tips:['篇章結構題先讀空格前後兩句，再看選項的代名詞指誰。','問句後面的空格，常常就是答案或主旨句。','結論段開頭常是「總結前面例子」的句子。','誤選項通常內容沒在文章出現，或讓下一句接不上。'],
+ levels:[
+  {name:'篇章結構',en:'Fun with change',desc:'把四個句子放回正確位置。',cloze:true,structure:true,
+   passage:'Most people have habits that they would like to change for the better. However, such changes are not always easy to make. So how can we make people more eager to take action and make positive changes? {1}\n\nLet’s look at a common part of daily life: crossing the street. People often ignore the “red man” light signal, which can cause accidents. To improve road safety, a car company put up a new kind of traffic light at an intersection in Lisbon, Portugal. When the light turned from green to red, a special red man started to dance. {2} Anyone could enter the booth, choose some music, and dance. Thanks to this creative idea, 81% more pedestrians began to stop at the red light.\n\nAt a crowded subway station in Stockholm, Sweden, another fun twist was added to daily life. The goal of the experiment was to have people use the stairs rather than the escalator. {3} Each key would actually produce a sound when someone stepped on it. Before this, people would head straight for the escalator. After the change, the number of people who chose the stairs went up by 66%.\n\n{4} When ordinary activities become more interesting, most people are happy to join in the fun. The rewards of these changes can be big or small. The important thing is that they promote positive behavior and help to make people smile.',
+   shared:['People can add an exciting spark to their daily routines in many creative ways.','To achieve this, ordinary stairs were changed to look like giant piano keys.','As a result, the escalator in the station was removed for safety reasons.','Fortunately, the answer is quite simple: let them have fun!','Its dance moves were actually performed by a person in a nearby booth.'],
+   qs:[{b:1,tag:'主旨句',a:3,clue:'前一句是問句 how can we…?，空格要給出答案，也就是全文主旨。'},
+    {b:2,tag:'代名詞',a:4,clue:'Its 指前一句的 red man；下一句的 the booth 需要前面先提到 booth。'},
+    {b:3,tag:'承接語',a:1,clue:'To achieve this 承接前一句的 goal；下一句的 Each key 需要先出現 piano keys。'},
+    {b:4,tag:'結論句',a:0,clue:'結論段開頭總結前面兩個例子，回到主旨。'}]}
+ ]},
+AI:{mag:true,unit:'UNIT 4',name:'AI 保姆',en:'Is AI Really Saving Time? The Rise of “Botsitting”',icon:'🤖',tint:'#dfe6f2',
+ lead:'AI 工具到處都是，但管理、引導、修正 AI 的「AI 保姆」工作，反而吃掉員工的時間，甚至讓人慢慢失去自己的判斷力。',
+ learn:['botsitting = bot + babysitting：花在管理、引導、修正 AI 工具的時間與精力；美、英、澳的研究顯示，許多員工每週花超過 6 小時當 AI 保姆。',
+  '隱藏問題：AI 誤解任務要重寫提示詞、漏掉資訊要補上，還得逐一再確認，因為 AI 可能聽起來很有自信，卻完全錯誤。',
+  '影響士氣：花很多時間修錯，感覺產出很多，結果卻完成得更少；挫折累積到臨界點，有人開始偷工減料，不檢查就交出 AI 生成的作品。',
+  '結論：AI 是強大的助手，但取代不了批判性思考；會用 AI 只成功了一半，知道什麼時候該自己思考同樣重要。'],
+ words:[['draft','v.','草擬；寫草稿',''],['summarize','v.','概述；總結',''],['workplace','n.','工作場所',''],['misunderstand','v.','誤解；弄錯','三態 misunderstood'],
+  ['information','n.','資訊（不可數）',''],['accomplish','v.','完成；實現',''],['frustration','n.','沮喪；挫折',''],['eventually','adv.','最後；終於',''],
+  ['content','n.','內容（不可數）',''],['critical','adj.','批判性的','critical thinking']],
+ phrases:[['known as','被稱為'],['act as','擔任；充當'],['eat up','大量耗費（時間、金錢）'],['leave out','遺漏；忽略'],['a matter of','關乎…的問題'],
+  ['cut corners','偷工減料；走捷徑'],['go by','（時間）流逝'],['be half the battle','成功了一半'],['feel like','感覺好像；想要'],['in the end','說到底；最後']],
+ patterns:[{f:'spend + 時間 / 金錢 / 精力 + on N. / V-ing',n:'某人花時間、金錢、精力在某事上；後面接 V-ing，不接 to V。',ex:'Many employees spend over six hours a week acting as babysitters for these programs.'},
+  {f:'while + V-ing（分詞構句）',n:'主詞相同時省略主詞、be 動詞改 being；while 表對比「然而、卻」。',ex:'AI can sound completely confident while being completely wrong.'},
+  {f:'…, only to V',n:'結果卻…，表示出乎意料、通常令人失望的結果。',ex:'People often feel like they’re producing a lot, only to realize later that they actually accomplished much less.'}],
+ links:['L5 使役動詞 let + O + VR：a habit of letting technology make decisions for them。','L4 單字 accomplish 在本課再出現：they actually accomplished much less。','L4 形容詞子句：a fully independent worker that can handle everything on its own。','L5 片語 on one’s own ↔ on its own。'],
+ tips:['spend 後面接 V-ing：spend hours fixing errors。','information、content 都是不可數名詞，不加 s。','only to V 表示「結果卻…」，和表目的的 to V 不同。','in the end 有「說到底」和「最後」兩種意思，看上下文判斷。'],
+ levels:[{name:'單字選擇',en:'Botsitting words',desc:'從文章裡找出正確的單字。',qs:[
+  {t:'mc',q:'Office workers use AI tools to ___ emails and summarize reports.',o:['draft','admit','release','track'],a:0},
+  {t:'mc',q:'Please ___ the article in three clear sentences.',o:['misunderstand','summarize','abandon','conclude'],a:1},
+  {t:'mc',q:'Workers’ time in the ___ is eaten up by fixing AI’s mistakes.',o:['landmark','stadium','workplace','memorial'],a:2},
+  {t:'mc',q:'Workers have to rewrite prompts when the AI ___ a task.',o:['promotes','identifies','misunderstands','pursues'],a:2},
+  {t:'mc',q:'They also have to supply ___ that the AI left out.',o:['frustration','achievement','engagement','information'],a:3},
+  {t:'mc',q:'People feel productive, only to realize later that they actually ___ much less.',o:['abandoned','accomplished','released','admitted'],a:1},
+  {t:'mc',q:'This ___ builds over time until workers reach a breaking point.',o:['popularity','unity','frustration','excellence'],a:2},
+  {t:'mc',q:'AI is a powerful assistant, but it can’t replace ___ thinking.',o:['daring','visible','dense','critical'],a:3}]}]},
+
+STN:{mag:true,unit:'UNIT 6',name:'巨石陣與上下文線索',en:'Context Clues · Celebrating Stonehenge',icon:'🗿',tint:'#e6e1d6',
+ lead:'讀門秘笈：遇到生字先別查字典，用前後文猜字義；再用〈Celebrating Stonehenge〉實際練習。',
+ learn:['四種上下文線索：①直接給定義（Carnivorous animals are those that eat only meat）②邏輯推理（flew、nest → osprey 是一種鳥）③同義線索（on his own → introvert 是喜歡獨處的人）④反義線索（but → fussy eater 和什麼都吃相反）。',
+  '巨石陣位於英格蘭西南部寧靜的鄉間，建於新石器時代，大約有 5,000 年歷史，常出現在電影、音樂和書裡。',
+  '用途不確定：有人推論是權貴的墓地，也有人認為是追蹤太陽和月亮移動的曆法；石頭巨大又難搬運，可見對建造者很重要。',
+  '每年超過一百萬人造訪；最熱門的是夏至（一年中白晝最長的一天），巨石正好與日出對齊。'],
+ words:[['structure','n.','建築物；結構體',''],['surround','v.','包圍；環繞','be surrounded by'],['reference','v.','提及；引用',''],['calendar','n.','曆法；日曆',''],
+  ['transport','v.','運輸；搬運',''],['tranquil','adj.','寧靜的','同義線索：peaceful'],['theorize','v.','提出理論；推論','反義線索：know for certain'],['burial','n.','埋葬','burial place 墓地']],
+ phrases:[['come across','偶然遇到'],['rather than','而非'],['work out','想出；理解'],['for certain','確定地'],['serve as','作為；擔任'],['line up with','與…排成一直線']],
+ patterns:[{f:'no matter + wh-, S + V',n:'無論…都…；= wh-ever。放句首時後面加逗點。',ex:'No matter why it was built, clearly it was important to the people who built it.'},
+  {f:'…N, when + S + V（關係副詞）',n:'先行詞是特定時間時，用非限定的 , when 補充說明。',ex:'…the summer solstice, when the structure lines up perfectly with the sunrise.'},
+  {f:'would have + p.p.',n:'對過去情況的推測：「當時應該…」。',ex:'The stones themselves are huge and would have been very difficult to transport.'}],
+ links:['L5 單字 surround：It can be found surrounded by green fields。','L6 單字 ancient：one of the most famous ancient structures。','L4 非限定子句：the Neolithic period, which makes it about 5,000 years old。','R2 片語 rather than：Rather than reaching for a dictionary…'],
+ tips:['同義線索常緊鄰生字：beautiful, peaceful, and tranquil。','看到 but、although、however，要想到反義線索。','特定時間當先行詞用「, when」，一般時間用「when」不加逗點。','no matter why = whyever 的意思，後面接直述句語序。'],
+ levels:[]},
+
+BOT:{mag:true,unit:'UNIT 7 克漏字',name:'寶可夢與送貨機器人',en:'How Pokémon GO Helps Robots Find Your Door',icon:'📦',tint:'#f6d9d1',
+ lead:'高樓擋住 GPS，讓送貨機器人走錯街；解方竟然來自《寶可夢 GO》玩家多年來拍的地標影片。',
+ learn:['Coco Robotics 在美國多個城市用小型機器人送披薩和雜貨，機器人必須隨時知道自己的精確位置。',
+  '高樓會阻擋或干擾 GPS 訊號，位置可能偏移多達 50 公尺，足以讓機器人走錯街。',
+  'Niantic 的玩家多年來用掃描功能錄下地標影片、領取遊戲獎勵，不知不覺幫忙建立了詳細的 3D 世界地圖。',
+  '機器人比對攝影機影像和附近地標，就能精準辨識位置，甚至停在顧客家門口。',
+  '克漏字考點：(1) As a result 因果 (2) solution to 詞組 (3) pick up 片語動詞 (4) have helped 現在完成式 (5) guide 動詞字義。'],
+ words:[['mobile','adj.','供手機使用的；行動的','mobile game'],['landmark','n.','地標',''],['reward','n.','獎勵；獎賞','in-game rewards'],['identify','v.','辨識；確認',''],
+  ['scan','v.','掃描',''],['pickup','n.','取貨','pickup spot 取貨點']],
+ phrases:[['have…in common','有…共同點'],['as a result','因此；結果'],['solution to','…的解決方案'],['pick up','獲得；領取'],['thanks to','幸虧；由於'],['take over','接管'],['give away','贈送；分送'],['keep up with','跟上']],
+ patterns:[{f:'have + p.p.（現在完成式）',n:'過去開始的動作累積到現在，並對現在造成影響。',ex:'Without realizing it, these players have helped Niantic build a huge, detailed 3D map of the world.'},
+  {f:'help + O + (to) VR',n:'help 後面的受詞補語可用原形動詞或 to V。',ex:'These players have helped Niantic build a huge 3D map.'},
+  {f:'By + V-ing, S + V',n:'藉由做…（達成某結果）。',ex:'By comparing camera images with nearby landmarks, the robots can accurately identify their location.'}],
+ links:['L6 單字 landmark 再出現：record videos of landmarks。','L4 單字 reward：in-game rewards。','R2 片語 thanks to：Thanks to a game played for fun…','L5 使役動詞的好朋友：help + O + VR。'],
+ tips:['克漏字先判斷前後兩句的關係：因果、對比、舉例。','solution 搭配介系詞 to：a solution to the problem。','過去持續到現在的影響用現在完成式。','track 追蹤、trace 追查來源、guide 引導，字義要分清楚。'],
+ levels:[]},
+
+JE:{mag:true,unit:'UNIT 8',name:'艾洛迪的演員之路',en:'Jacob Elordi: The Making of a Modern Hollywood Star',icon:'🎬',tint:'#ead7d7',
+ lead:'從青少年偶像轉型挑戰嚴肅角色，Jacob Elordi 刻意避免被定型，成為好萊塢最受矚目的新星之一。',
+ learn:['生於澳洲布里斯本，學生時期演學校話劇，決定追求演藝事業，花了好幾年試鏡、等待機會。',
+  '2018 年 Netflix《The Kissing Booth》爆紅，他演 Noah Flynn；連同兩部續集帶來極大名氣。',
+  '不想只被看作青少年偶像：HBO《Euphoria》演內心困擾的高中運動員 Nate Jacobs，展現演技範圍，贏得好萊塢尊重。',
+  '演出《Priscilla》的貓王、《Frankenstein》的怪物，獲評論家與觀眾讚賞；傳聞他可能成為下一任 James Bond。'],
+ words:[['determined','adj.','下定決心的',''],['pursue','v.','追求',''],['professional','adj.','專業的；職業的',''],['fame','n.','名氣','reputation 名譽'],
+  ['idol','n.','偶像','teen idol'],['athlete','n.','運動員',''],['demanding','adj.','要求高的；費力的',''],['performance','n.','表現；演出',''],
+  ['critic','n.','評論家',''],['rumor','n.','傳聞；謠言','']],
+ phrases:[['be stuck with','擺脫不了；被定型'],['take on','接演（角色）；承擔'],['big break','重大突破'],['together with','連同'],['open the door to','開啟…的機會'],['rather than','而非'],['from one N. to another','從一個…到另一個']],
+ patterns:[{f:'be seen / regarded as + N./Adj.',n:'被視為…（see/regard + O + as 的被動）。',ex:'Today, he is widely regarded as one of Hollywood’s brightest rising stars.'},
+  {f:'could have + p.p.',n:'本來可以…（但實際上沒有）；也可表示「可能已經…」。',ex:'He could have continued playing similar romantic roles.'},
+  {f:'wonder + wh- 子句 / be likely to V',n:'wonder 後面的 wh- 子句用直述句語序；be likely to V「很可能會…」。',ex:'Fans have naturally started wondering what role he might take on next.'}],
+ links:['L4 非限定子句：Priscilla, which was directed by Sofia Coppola。','L4 單字 perform → performance：Elordi’s performance earned praise。','L6 片語 even though ↔ Although nothing has been confirmed。','R2 片語 rather than：his private life rather than his public image。'],
+ tips:['be regarded as 後接名詞或形容詞。','could have p.p.＝本來可以但沒有；may have p.p.＝可能已經。','wonder what role he might take on（○）wonder what role might he take on（×）。','take on 一個角色＝接演；take on 工作＝承擔。'],
+ levels:[{name:'單字選擇',en:'Hollywood words',desc:'從文章裡找出正確的單字。',qs:[
+  {t:'mc',q:'Jacob Elordi has been ___ to avoid being seen only as a teenage heartthrob.',o:['demanding','determined','professional','visible'],a:1},
+  {t:'mc',q:'He performed in school plays before deciding to ___ a professional career.',o:['pursue','admit','abandon','release'],a:0},
+  {t:'mc',q:'He decided to pursue a ___ career in show business.',o:['tranquil','critical','professional','dense'],a:2},
+  {t:'mc',q:'Together with its two sequels, the films brought him great ___.',o:['critic','rumor','unity','fame'],a:3},
+  {t:'mc',q:'These popular movies made Elordi a teen ___.',o:['athlete','idol','critic','tourist'],a:1},
+  {t:'mc',q:'In Euphoria, he played Nate Jacobs, a troubled high school ___.',o:['athlete','idol','pest','slave'],a:0},
+  {t:'mc',q:'Well-known directors began offering him larger and more ___ parts.',o:['grateful','dense','demanding','tranquil'],a:2},
+  {t:'mc',q:'Elordi’s ___ earned praise from both critics and audiences.',o:['frustration','treatment','popularity','performance'],a:3}]}]},
+
+PP:{mag:true,unit:'UNIT 9',name:'刺梨仙人掌危機',en:'A Prickly Problem: The Plant That Consumed a Country',icon:'🌵',tint:'#dfe9d3',
+ lead:'為了養殖紅色染料小蟲而引進澳洲的刺梨仙人掌，失控吞噬了約一個英國大小的土地，最後靠一隻小飛蛾解決。',
+ learn:['1788 年英國船把刺梨帶到澳洲，目的是養殖能生產紅色染料的昆蟲；後來昆蟲死光，仙人掌卻留了下來。',
+  '澳洲氣候適合、沒有天敵：鳥把種子帶到各地，斷掉的莖落地就生根；1920 年代初蔓延約 5,800–6,000 萬英畝，茂密的仙人掌牆吞沒整座農場。',
+  '燒、砍、下毒都沒用，連一小段都能長回來；許多家庭棄屋，農地無法耕作。',
+  '科學家從阿根廷找來仙人掌螟蛾，幼蟲從內往外吃掉仙人掌；1926 年野放，1933 年昆士蘭約八成、新南威爾斯五到六成土地被清除，澳洲人還立紀念碑感謝牠。'],
+ words:[['consume','v.','吞噬；消耗',''],['stem','n.','（植物的）莖',''],['dense','adj.','茂密的；密集的',''],['abandon','v.','放棄；遺棄',''],
+  ['option','n.','選擇；選項','run out of options'],['conclude','v.','推斷出；總結',''],['percent','n.','百分之…',''],['grateful','adj.','感激的','be grateful for'],
+  ['memorial','n.','紀念碑',''],['pest','n.','害蟲','pest control']],
+ phrases:[['feed on','以…為食'],['die off','相繼死去'],['far and wide','到處；廣泛地'],['take root','生根；扎根'],['run out of','用完；耗盡'],['from the inside out','由內而外'],['keep…under control','控制住']],
+ patterns:[{f:'be used to V / used to V / be used to V-ing',n:'被用來…／過去常常…／習慣於…，三種要分清楚。',ex:'Their goal was to raise tiny insects that were used to produce a valuable bright red dye.'},
+  {f:'wherever + S + V（= no matter where）',n:'無論在哪裡…；wh-ever 引導讓步副詞子句。',ex:'Broken stems easily took root wherever they landed.'},
+  {f:'複合形容詞：Adv./N. + p.p.',n:'過去分詞表被動或完成。',ex:'The cactus moth was released into the two hardest-hit states.'}],
+ links:['L5 單字 consume：課本是「吃喝」，本課是「吞噬」。','L4 單字 disease：with no native animals or diseases to eat or kill it。','L6 單字 monument ↔ 本課 memorial。','L4 形容詞子句：properties that they had left behind years earlier。'],
+ tips:['be used to V 被用來；be used to V-ing 習慣於，差一個字意思完全不同。','cactus 的複數是 cacti。','run out of 後面接名詞：run out of options。','percent 前面的數字不加 s：80 percent。'],
+ levels:[{name:'單字選擇',en:'Cactus words',desc:'從文章裡找出正確的單字。',qs:[
+  {t:'mc',q:'The prickly pear became known as the plant that ___ a country.',o:['consumed','concluded','promoted','identified'],a:0},
+  {t:'mc',q:'Broken ___ easily took root wherever they landed.',o:['pests','stems','options','memorials'],a:1},
+  {t:'mc',q:'___ walls of cactus, sometimes taller than a horse, swallowed entire farms.',o:['Grateful','Brief','Dense','Visible'],a:2},
+  {t:'mc',q:'Families ___ their homes, and countless farms became impossible to cultivate.',o:['admitted','released','surrounded','abandoned'],a:3},
+  {t:'mc',q:'Australia was quickly running out of ___.',o:['options','rumors','rewards','critics'],a:0},
+  {t:'mc',q:'After careful testing, scientists ___ that the moth offered the best hope.',o:['envied','concluded','consumed','tracked'],a:1},
+  {t:'mc',q:'By 1933, up to 80 ___ of the affected land in Queensland had been cleared.',o:['structure','calendar','percent','memorial'],a:2},
+  {t:'mc',q:'___ Australians even built a memorial to honor the tiny moth.',o:['Critical','Determined','Demanding','Grateful'],a:3}]}]},
+
+COR:{mag:true,unit:'UNIT 5',name:'香菜與 DNA',en:'The Science and Culture of Coriander',icon:'🌿',tint:'#d8ead2',
+ lead:'為什麼有人覺得香菜像肥皂？答案在 DNA；香菜也有幾千年的歷史，還在臺灣變成各種新奇商品。',
+ learn:['有些人帶有特定基因，對「醛類」特別敏感；香菜和肥皂都含醛類，所以吃起來像肥皂。從小常吃香菜的人比較少有這種反應。',
+  '美式英文：葉子叫 cilantro、種子叫 coriander；英國、澳洲兩者都叫 coriander。coriander 來自希臘文的「臭蟲」。',
+  '最古老的香菜種子在黎凡特的洞穴，約西元前 6000 年；羅馬人用來調味麵包、保存肉類；中世紀傳遍歐洲。',
+  '臺灣領先推出香菜奶茶、香菜洋芋片、香菜冰淇淋；日本必勝客的香菜披薩大受歡迎，後來加倍香菜再推出。'],
+ words:[['debate','v./n.','辯論；爭論','the debate over'],['flavor','n./v.','味道；調味',''],['specific','adj.','特定的',''],['process','v.','處理；解讀',''],
+  ['reaction','n.','反應',''],['stretch','v.','延續；追溯','stretch back'],['spread','v.','傳播；蔓延','三態同形'],['product','n.','產品',''],
+  ['release','v.','推出；發行',''],['chain','n.','連鎖店','']],
+ phrases:[['lie in','在於'],['be sensitive to','對…敏感'],['date back to','追溯到'],['lead the way','帶頭；領先'],['the debate over','關於…的爭論'],['love it or hate it','不管喜不喜歡'],['earn one’s place','取得一席之地']],
+ patterns:[{f:'while（而；當…時；雖然）',n:'while 可表示對比、時間或讓步，看上下文判斷。',ex:'In American English, the leaves are called cilantro, while the seeds are called coriander.'},
+  {f:'such + (a) + Adj. + N + that…',n:'如此…以致於…；such 修飾名詞。',ex:'…a coriander pizza that became such a hit with younger customers that the chain brought it back.'},
+  {f:'twice the + N + of / twice as + Adj. + as',n:'倍數比較；twice 不搭配「比較級 + than」。',ex:'The chain brought it back with twice the amount of the herb.'},
+  {f:'taste + Adj. / taste like + N',n:'連綴動詞：嚐起來…。',ex:'Many others hate it and claim it tastes like soap.'}],
+ links:['L6 such…that ↔ such a hit with younger customers that…','L5 單字 product 在本課再出現。','L4 單字 sensitive、specific 在本課再出現。','L4 非限定子句：these chemicals, which are also found in soap。'],
+ tips:['taste like + 名詞；taste + 形容詞。','twice as large as（○）twice larger than（盡量避免）。','flavor 也可以當動詞：flavor bread「給麵包調味」。','spread 三態同形：spread–spread–spread。'],
+ levels:[{name:'單字選擇',en:'Coriander words',desc:'從文章裡找出正確的單字。',qs:[
+  {t:'mc',q:'Coriander has one of the world’s most hotly ___ flavors.',o:['released','debated','processed','stretched'],a:1},
+  {t:'mc',q:'Some people have a ___ gene that makes them sensitive to aldehydes.',o:['specific','daring','dense','grateful'],a:0},
+  {t:'mc',q:'Some people’s brains ___ the herb as unpleasant.',o:['stretch','release','process','debate'],a:2},
+  {t:'mc',q:'This ___ is far less common among people who grew up eating coriander.',o:['chain','product','flavor','reaction'],a:3},
+  {t:'mc',q:'Coriander’s story also ___ back thousands of years.',o:['stretches','spreads','debates','releases'],a:0},
+  {t:'mc',q:'By the Middle Ages, the plants had ___ across Europe.',o:['released','spread','processed','consumed'],a:1},
+  {t:'mc',q:'In Japan, Pizza Hut ___ a coriander pizza.',o:['debated','stretched','released','spread'],a:2},
+  {t:'mc',q:'The pizza became such a hit that the ___ brought it back with twice the herb.',o:['reaction','flavor','product','chain'],a:3}]}]},
+
+AG:{mag:true,unit:'UNIT 7',name:'Ariana 的重生',en:'Ariana Grande: A Grand(e) Rebirth',icon:'🎤',tint:'#f0d6df',
+ lead:'Ariana Grande 曾想永遠放棄音樂；拍《魔法壞女巫》時，角色 Glinda 的自信影響了她，讓她用自己的方式繼續創作。',
+ learn:['2013 年 20 歲發行第一張專輯 Yours Truly；第二張專輯的單曲 “Problem” 讓她人氣暴漲。',
+  '2017 年曼徹斯特演唱會爆炸案 22 人罹難，之後好友過世、婚約告終，她深受打擊。',
+  '2022 年拍 Wicked 時認真考慮放棄音樂；Glinda 的自信感染了她，她決定照自己的條件繼續，不再長途巡演和疲累的宣傳。',
+  '2024 年 3 月 eternal sunshine 直接登上冠軍；今年推出大膽的新作 petal，她形容「充滿生命力」。'],
+ words:[['award','n.','獎項','award-winning'],['quit','v.','放棄；辭職',''],['bomb','n.','炸彈','set a bomb off'],['stadium','n.','體育場',''],
+  ['engagement','n.','婚約',''],['admit','v.','承認',''],['creative','adj.','創作的；有創意的',''],['focus','n.','重點',''],
+  ['bold','adj.','大膽的',''],['daring','adj.','大膽創新的',''],['tragedy','n.','悲劇',''],['popularity','n.','人氣','']],
+ phrases:[['for good','永遠地'],['go from strength to strength','越來越成功'],['set sth off','引爆'],['come to an end','結束'],['give up (on)','放棄'],
+  ['rub off on sb','（特質）影響某人'],['on one’s own terms','照自己的方式'],['leave sth behind','拋下'],['end up V-ing','最後…'],['from now on','從現在起']],
+ patterns:[{f:'consider + N / V-ing',n:'考慮做某事，後面接動名詞。',ex:'The award-winning singer actually considered quitting music for good.'},
+  {f:'may + have + p.p.',n:'對過去的可能推測：可能已經…。',ex:'Her movie role may have ended up saving her music career.'},
+  {f:'leave + O + O.C.（被動：be left + O.C.）',n:'使某人處於某種狀態。',ex:'Grande was left deeply shaken by it all.'}],
+ links:['L5 片語 end up：may have ended up saving her career。','L4 形容詞子句：a self-confident witch who is named Glinda、the character…, whom Grande plays。','L6 so…that：Glinda was so confident that it began to rub off on Grande。','R2 單字 creative 在本課再出現。'],
+ tips:['consider 後面接 V-ing，不接 to V。','rub off on 的主詞是「特質」，不是人。','may have p.p. 是對過去的推測，不是過去式的 may。','bold 強調有魄力，daring 強調突破常規。'],
+ levels:[{name:'單字選擇',en:'Comeback words',desc:'從文章裡找出正確的單字。',qs:[
+  {t:'mc',q:'The ___-winning singer actually considered quitting music for good.',o:['award','focus','bomb','tragedy'],a:0},
+  {t:'mc',q:'She actually considered ___ music for good.',o:['admitting','quitting','releasing','focusing'],a:1},
+  {t:'mc',q:'In 2017, someone set a ___ off at her concert in Manchester.',o:['focus','era','bomb','tragedy'],a:2},
+  {t:'mc',q:'Someone set a bomb off in the ___, and twenty-two people lost their lives.',o:['workplace','memorial','landmark','stadium'],a:3},
+  {t:'mc',q:'Soon after, her ___ came to a sudden end.',o:['engagement','popularity','award','frustration'],a:0},
+  {t:'mc',q:'She recently ___ that she seriously thought about giving up on music.',o:['quit','admitted','released','delighted'],a:1},
+  {t:'mc',q:'From now on, the ___ process would be her focus.',o:['dense','grateful','creative','demanding'],a:2},
+  {t:'mc',q:'Petal is a ___ new work which she has described as being “full of life.”',o:['critical','visible','tranquil','daring'],a:3}]}]},
+
+BN:{mag:true,unit:'UNIT 12',name:'紙鈔說故事',en:'What Banknotes Tell Us About the Countries That Print Them',icon:'💵',tint:'#dcebe6',
+ lead:'“Money talks”——紙鈔上的圖案訴說國家的歷史、價值與認同，連材質和防偽設計都有故事。',
+ learn:['哥斯大黎加：科隆紙鈔色彩鮮豔，有珊瑚礁、蝴蝶、猴子、樹懶。',
+  '瑞士：法郎紙鈔不再印人物，改成直式，畫著各種工作的手，彰顯科學與藝術的卓越。',
+  '英國 5 英鎊：邱吉爾和大笨鐘，鐘面三點＝他著名「熱血、辛勞、眼淚和汗水」演說的時間。',
+  '歐元：虛構建築，促進 21 國、3.58 億人的團結與公平；澳洲每張紙鈔都有女性，也是第一個用聚合物（塑膠）紙鈔的國家。',
+  '防偽：全像圖、閃亮條帶、隱藏文字。作者觀點：錢不會開口，但真的很有話說。'],
+ words:[['represent','v.','代表；象徵',''],['meanwhile','adv.','同時',''],['excellence','n.','卓越',''],['visible','adj.','看得見的',''],
+  ['sweat','n.','汗水','三態同形（v.）'],['promote','v.','促進',''],['unity','n.','團結',''],['plastic','n.','塑膠',''],
+  ['security','n.','安全','security feature 防偽特徵'],['shiny','adj.','閃亮的','']],
+ phrases:[['money talks','有錢好辦事'],['come in','有（顏色、款式）可選；到貨；得名次'],['no longer','不再'],['aside from','除了…之外'],['be made of','由…製成'],['more than just','不僅僅是'],['be filled with','充滿']],
+ patterns:[{f:'no longer + V = not … any longer / anymore',n:'不再…。',ex:'Today, Swiss franc notes no longer have images of people.'},
+  {f:'aside from + N / V-ing',n:'除了…之外（包含或排除，看上下文）。',ex:'Aside from looking at what notes show, we can learn a lot from why those things are shown.'},
+  {f:'be made of / be made from',n:'of：看得出原料；from：原料已改變。',ex:'Many modern notes are made of polymer, a type of plastic.'}],
+ links:['L6 represent / symbolize ↔ money or the wealth it represents。','R2 promote ↔ promote a spirit of unity。','L5 plastic 在本課變成防偽材質。','L6 單字 landmark：Big Ben 是英國的地標。'],
+ tips:['事實 vs 觀點：「It may not speak aloud, but money really does have a lot to say.」是作者的觀點。','come in 還可以表示「到貨」、「得到第幾名」。','no longer 放在一般動詞前、be 動詞後。','sweat 當動詞時三態同形。'],
+ levels:[{name:'單字選擇',en:'Banknote words',desc:'從文章裡找出正確的單字。',qs:[
+  {t:'mc',q:'Money—or the wealth it ___—influences people.',o:['represents','promotes','identifies','consumes'],a:0},
+  {t:'mc',q:'___, in Switzerland, the nation’s excellence in science and the arts is honored.',o:['Obviously','Meanwhile','Eventually','Properly'],a:1},
+  {t:'mc',q:'In Switzerland, the nation’s ___ in science and the arts is honored.',o:['security','unity','excellence','sweat'],a:2},
+  {t:'mc',q:'The UK’s £5 note shows Winston Churchill, with Big Ben ___ behind him.',o:['daring','dense','grateful','visible'],a:3},
+  {t:'mc',q:'The clock shows the time of Churchill’s famous “blood, toil, tears, and ___” speech.',o:['sweat','unity','fame','security'],a:0},
+  {t:'mc',q:'Euro notes’ fictional buildings ___ a spirit of unity and fairness.',o:['abandon','promote','consume','admit'],a:1},
+  {t:'mc',q:'Euro notes promote a spirit of ___ and fairness among 21 countries.',o:['tragedy','popularity','unity','frustration'],a:2},
+  {t:'mc',q:'Notes also include ___ features like holograms and shiny strips.',o:['excellence','sweat','plastic','security'],a:3}]}]},
+
+MH:{mag:true,unit:'UNIT 14',name:'微習慣',en:'Microhabits: Small Wins Keep You Moving',icon:'🌱',tint:'#e3eecf',
+ lead:'目標太大很難維持；從「微習慣」開始——小到很容易開始、很難略過的行動。',
+ learn:['很多人以為失敗是缺乏動力或自律，其實常常是目標太大、太難維持。',
+  '微習慣例子：與其說「我想變健康」，不如決定「午餐後走五分鐘」；每次小成功給大腦成就感，讓你想重複。',
+  '做法：一次只改一件事、移除阻礙（把跑鞋放門邊、把健康零食放近一點）。',
+  '連結舊習慣當觸發點（刷完牙伸展兩分鐘）；習慣堆疊（鋪床 → 喝水 → 散步 → 閱讀）。',
+  '記錄進度建立信心；漏了一天別放棄，想想哪裡出錯再調整。持久的習慣來自每天做一點，不是完美。'],
+ words:[['goal','n.','目標',''],['maintain','v.','維持',''],['task','n.','任務',''],['skip','v.','略過；不做',''],
+  ['achievement','n.','成就','a sense of achievement'],['memory','n.','記憶',''],['further','adv.','更進一步','take sth further'],['brief','adj.','簡短的',''],
+  ['track','v.','追蹤記錄',''],['progress','n.','進展',''],['motivation','n.','動機',''],['trigger','n./v.','觸發點；引發','']],
+ phrases:[['only to V','結果卻…'],['instead of','而不是'],['at a time','每次'],['get in one’s way','妨礙某人'],['keep going','繼續下去'],
+  ['kick things off','開始'],['in a row','連續地'],['go wrong','出錯'],['lead to','導致']],
+ patterns:[{f:'Once + S + V, S + V',n:'一旦…就…（= as soon as）；once 子句用現在式代替未來式。',ex:'Once a microhabit becomes routine, you can make it stronger by linking it to something you already do.'},
+  {f:'wh- 名詞子句',n:'疑問詞引導名詞子句，語序和直述句一樣；what = the thing(s) that。',ex:'This is where microhabits can help.'},
+  {f:'…, which…（補充說明整個子句）',n:'非限定用法的 which 可以指前面一整句話。',ex:'Each small success gives your brain a sense of achievement, which encourages you to repeat the action.'}],
+ links:['L4 形容詞子句：tiny actions that take very little time、…, which encourages you…（指前面整句）。','L4 句型 Once + S + V：Once they locate such a tree…','L5 使役動詞 make + O + VR：makes the next step feel even more natural。','R2 主題呼應：小小的改變也能促進正面行為。'],
+ tips:['only to V 表示「結果卻…」的失望結果。','once 子句用現在式代替未來式。','what we should do next 是名詞子句，不用倒裝。','非限定的 which 前面一定有逗點。'],
+ levels:[{name:'單字選擇',en:'Habit words',desc:'從文章裡找出正確的單字。',qs:[
+  {t:'mc',q:'Have you ever set a ___ and felt excited at first, only to give up a few weeks later?',o:['goal','task','memory','trigger'],a:0},
+  {t:'mc',q:'Their goals are often too big and difficult to ___.',o:['skip','maintain','track','adjust'],a:1},
+  {t:'mc',q:'Because the ___ is small and clear, it feels easy to start.',o:['memory','progress','task','motivation'],a:2},
+  {t:'mc',q:'A small, clear task feels easy to start and hard to ___.',o:['maintain','track','adjust','skip'],a:3},
+  {t:'mc',q:'Each small success gives your brain a sense of ___.',o:['achievement','memory','trigger','frustration'],a:0},
+  {t:'mc',q:'The routine kicks things off, so you do not need ___ or motivation.',o:['progress','memory','goal','task'],a:1},
+  {t:'mc',q:'After you make your bed, drink a glass of water. Then take a ___ walk.',o:['dense','visible','brief','bold'],a:2},
+  {t:'mc',q:'___ your progress by making a list shows how far you’ve come.',o:['Skipping','Maintaining','Adjusting','Tracking'],a:3}]}]}
+
+};
+</script>
+<script>
+(function(){
+'use strict';
+if(!window.THREE){document.querySelector('#loader p').textContent='3D 地圖載入失敗，請重新整理頁面。';return;}
+
+var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var LK=0.27;
+var TOP=0.36,GR=2.0,PATH_R=1.62,PATH_W=0.22,D=4.7;
+var PATH_IN=PATH_R*Math.cos(Math.PI/6);
+var ORDER=['L4','L5','L6','R2'];
+
+/* ---------- storage ---------- */
+var STORE_KEY='review-island-2nd-v1';
+var S={player:null,levels:{},log:[],outbox:[]};
+try{var raw=localStorage.getItem(STORE_KEY);if(raw){var o=JSON.parse(raw);if(o&&typeof o==='object'){S.player=o.player||null;S.levels=o.levels||{};S.log=o.log||[];S.outbox=o.outbox||[];}}}catch(e){}
+function save(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
+function lv(id,i){var k=id+'-'+i;return S.levels[k]||(S.levels[k]={attempts:0,best:null,bestTime:null,done:false,wrong:[]});}
+
+var ISL=ORDER.map(function(id){var d=DATA[id];return {id:id,name:d.name,total:d.levels.length,done:0,wrong:false};});
+(function layout(){
+  var deg=function(a){a*=Math.PI/180;return new THREE.Vector2(Math.sin(a),Math.cos(a));};
+  var p=new THREE.Vector2(0,0),pts=[p.clone()];
+  [150,90,30].forEach(function(a){p=p.clone().add(deg(a).multiplyScalar(D));pts.push(p);});
+  var c=new THREE.Vector2();pts.forEach(function(v){c.add(v);});c.multiplyScalar(1/pts.length);
+  pts.forEach(function(v,i){v.sub(c);ISL[i].pos=v;});
+})();
+var MAGORDER=[['AI',295],['STN',266],['BOT',237],['JE',209],['PP',180],['COR',151],['AG',122],['BN',94],['MH',65]];
+var MAG=MAGORDER.map(function(m){var d=DATA[m[0]],a=m[1]*Math.PI/180;return {id:m[0],name:d.name,total:d.levels.length,done:0,wrong:false,mag:true,pos:new THREE.Vector2(Math.sin(a)*11,Math.cos(a)*11)};});
+var ALL=ISL.concat(MAG);
+function code(id){return DATA[id].mag?'Live':id;}
+var CENTER=new THREE.Vector3(0,0,0);
+
+/* ---------- renderer ---------- */
+var wrap=document.getElementById('scene');
+var renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.domElement.tabIndex=0;wrap.appendChild(renderer.domElement);
+var scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0xf4eee3,42,150);
+var camera=new THREE.PerspectiveCamera(34,1,0.1,500);
+
+var hemi=new THREE.HemisphereLight(0xeef6fa,0x8f8270,1.3*LK);scene.add(hemi);
+var sun=new THREE.DirectionalLight(0xfff1de,2.8*LK);
+sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+var sc=sun.shadow.camera;sc.left=-20;sc.right=20;sc.top=22;sc.bottom=-22;sc.near=1;sc.far=90;
+sun.shadow.bias=-0.0006;sun.shadow.normalBias=0.045;sun.shadow.radius=3;
+scene.add(sun);scene.add(sun.target);
+var fill=new THREE.DirectionalLight(0xbfd6ff,0.35*LK);fill.position.set(-20,14,-16);scene.add(fill);
+
+/* ---------- day / night ---------- */
+var KF=[
+ [0,'1e2c58','3f4f80','b4c2ff',1.15,'94a2d8','64566a',1.85,1,'5a88b2'],
+ [300,'26365f','4c5688','b8c4ff',1.0,'96a4da','66586c',1.85,1,'5c8ab4'],
+ [360,'7f8fc4','f6c3a6','ffb48a',1.3,'f3c6b5','6b5a5a',1.1,.55,'8fb7c4'],
+ [450,'a9d1ea','fbe6d3','ffe2c4',2.4,'eaf2f6','8a7a68',1.25,0,'9fcfd6'],
+ [720,'9fd0ec','f4eee3','fff1de',2.9,'eef6fa','8f8270',1.35,0,'a9d8db'],
+ [960,'a6cfe6','f8e7d2','ffe3c0',2.5,'f1efe8','8a7a66',1.25,0,'9fcbd2'],
+ [1065,'8b8fc4','f7b98f','ff9f6a',1.8,'f6d2bc','7d6660',1.2,.3,'93a9bd'],
+ [1140,'5a5e9e','d99aa6','ff9a7a',1.3,'c0b2e0','655868',1.35,.75,'6a7cab'],
+ [1260,'22325f','445488','c0ccff',1.2,'98a8dc','685a6e',1.9,1,'5a88b2'],
+ [1440,'1e2c58','3f4f80','b4c2ff',1.15,'94a2d8','64566a',1.85,1,'5a88b2']
+].map(function(r){var C=function(h){return new THREE.Color('#'+h);};
+  return {m:r[0],top:C(r[1]),hor:C(r[2]),sunC:C(r[3]),sunI:r[4],hs:C(r[5]),hg:C(r[6]),hi:r[7],night:r[8],water:C(r[9])};});
+var ENV={top:new THREE.Color(),hor:new THREE.Color(),sunC:new THREE.Color(),sunI:1,hs:new THREE.Color(),hg:new THREE.Color(),hi:1,night:0,water:new THREE.Color()};
+function sampleEnv(min){
+  min=((min%1440)+1440)%1440;var i=0;while(i<KF.length-2&&KF[i+1].m<=min)i++;
+  var a=KF[i],b=KF[i+1],t=(min-a.m)/(b.m-a.m);
+  ['top','hor','sunC','hs','hg','water'].forEach(function(k){ENV[k].copy(a[k]).lerp(b[k],t);});
+  ENV.sunI=a.sunI+(b.sunI-a.sunI)*t;ENV.hi=a.hi+(b.hi-a.hi)*t;ENV.night=a.night+(b.night-a.night)*t;
+}
+
+/* ---------- sky ---------- */
+var skyU={uTop:{value:new THREE.Color()},uHor:{value:new THREE.Color()},uSunDir:{value:new THREE.Vector3(0,1,0)},uSunCol:{value:new THREE.Color()},uNight:{value:0}};
+var sky=new THREE.Mesh(new THREE.SphereGeometry(200,32,16),new THREE.ShaderMaterial({
+  uniforms:skyU,side:THREE.BackSide,depthWrite:false,fog:false,
+  vertexShader:'varying vec3 vW;void main(){vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}',
+  fragmentShader:['uniform vec3 uTop,uHor,uSunCol,uSunDir;uniform float uNight;varying vec3 vW;',
+   'void main(){vec3 d=normalize(vW-cameraPosition);float h=clamp(d.y,0.,1.);',
+   'vec3 c=mix(uHor,uTop,pow(smoothstep(0.,.85,h),.7));',
+   'float s=max(dot(d,normalize(uSunDir)),0.);',
+   'c+=uSunCol*(pow(s,48.)*.35+pow(s,6.)*.07)*(1.-uNight*.6);',
+   'gl_FragColor=vec4(c,1.);}'].join('\n')
+}));
+sky.frustumCulled=false;sky.renderOrder=-2;scene.add(sky);
+(function(){var n=420,p=new Float32Array(n*3);
+  for(var i=0;i<n;i++){var u=Math.random()*Math.PI*2,v=0.12+Math.random()*0.88,r=180,s=Math.sqrt(1-v*v);p[i*3]=Math.cos(u)*s*r;p[i*3+1]=v*r;p[i*3+2]=Math.sin(u)*s*r;}
+  var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));
+  var m=new THREE.PointsMaterial({color:0xfff6e0,size:1.6,sizeAttenuation:false,transparent:true,opacity:0,fog:false,depthWrite:false});
+  var pts=new THREE.Points(g,m);pts.frustumCulled=false;sky.add(pts);sky.userData.stars=m;})();
+
+/* ---------- water ---------- */
+var waterU=THREE.UniformsUtils.merge([THREE.UniformsLib.fog,{
+  uTime:{value:0},uTint:{value:new THREE.Color(0xa9d8db)},uNight:{value:0},
+  uShallow:{value:new THREE.Color(0xa4d4da)},uDeep:{value:new THREE.Color(0x6fa9b8)},
+  uIsl:{value:ALL.map(function(d){return new THREE.Vector3(d.pos.x,d.pos.y,d.mag?0.62:1);})}}]);
+var water=new THREE.Mesh(new THREE.CircleGeometry(160,64),new THREE.ShaderMaterial({
+  uniforms:waterU,fog:true,
+  vertexShader:['#include <fog_pars_vertex>','varying vec2 vW;',
+   'void main(){vec4 wp=modelMatrix*vec4(position,1.);vW=wp.xz;vec4 mvPosition=viewMatrix*wp;gl_Position=projectionMatrix*mvPosition;',
+   '#include <fog_vertex>','}'].join('\n'),
+  fragmentShader:['#include <fog_pars_fragment>',
+   'uniform float uTime,uNight;uniform vec3 uTint,uShallow,uDeep;uniform vec3 uIsl[13];varying vec2 vW;',
+   'void main(){float d=length(vW);float far=smoothstep(8.,70.,d);',
+   'float w1=sin(vW.x*.35+uTime*.4+sin(vW.y*.27+uTime*.25)*1.6);',
+   'float w2=sin(vW.y*.42-uTime*.33+sin(vW.x*.21-uTime*.2)*1.4);',
+   'float drift=(w1+w2)*.25+.5;',
+   'vec3 col=mix(uShallow,uDeep,clamp(far*.85+drift*.18,0.,1.));',
+   'float md=1e3;for(int i=0;i<13;i++){md=min(md,length(vW-uIsl[i].xy)/uIsl[i].z);}',
+   'float shore=1.-smoothstep(2.4,3.6,md);col=mix(col,vec3(.86,.94,.93),shore*.5);',
+   'float ring=1.-smoothstep(0.,.07,abs(md-2.78-.06*sin(uTime*1.2)));col+=ring*.1;',
+   'float sp=pow(max(0.,sin(vW.x*3.1+uTime*1.7)*sin(vW.y*2.7-uTime*1.3)),24.)*(1.-far)*.35*(1.-uNight);col+=sp;',
+   'col*=uTint/vec3(.663,.847,.859);gl_FragColor=vec4(col,1.);',
+   '#include <fog_fragment>','}'].join('\n')
+}));
+water.rotation.x=-Math.PI/2;scene.add(water);
+
+/* ---------- materials ---------- */
+var matCache={};
+function M(c,o){return new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:1,metalness:0,flatShading:true},o||{}));}
+function MC(c){return matCache[c]||(matCache[c]=M(c));}
+var mat={
+  grass:M(0xc9d9b4),dirt:M(0x8a5a3c),sand:M(0xefe3cf),path:M(0xebe2d1,{side:THREE.DoubleSide}),
+  wood:M(0xb9804f),woodDark:M(0x8f5e38),pole:M(0x3a4644),
+  bulb:M(0xfff3d6,{emissive:new THREE.Color(0xffc777).multiplyScalar(.3),emissiveIntensity:0}),
+  win:M(0xf2e6cc,{emissive:new THREE.Color(0xffc777).multiplyScalar(.3),emissiveIntensity:0}),
+  flame:M(0xffb347,{emissive:new THREE.Color(0xff9a3c),emissiveIntensity:.5}),
+  red:M(0xff6a55,{emissive:new THREE.Color(0xff3b2b),emissiveIntensity:.55}),
+  pool:new THREE.MeshBasicMaterial({color:0xffc777,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}),
+  outline:new THREE.MeshBasicMaterial({color:0xe07a55,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide}),
+  cloud:M(0xffffff,{emissive:new THREE.Color(0xffffff),emissiveIntensity:.18})
+};
+
+/* ---------- helpers ---------- */
+function hexPt(r,k){var a=k*Math.PI/3;return [r*Math.sin(a),r*Math.cos(a)];}
+function ringGeo(ro,ri,segs,gap){
+  var pos=[],nor=[],idx=[];
+  for(var k=0;k<6;k++){var o0=hexPt(ro,k),o1=hexPt(ro,k+1),i0=hexPt(ri,k),i1=hexPt(ri,k+1);
+    for(var j=0;j<segs;j++){var t0=j/segs+gap,t1=(j+1)/segs-gap;
+      var L=function(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];};
+      var q=[L(o0,o1,t0),L(o0,o1,t1),L(i0,i1,t1),L(i0,i1,t0)],b=pos.length/3;
+      q.forEach(function(v){pos.push(v[0],0,v[1]);nor.push(0,1,0);});idx.push(b,b+2,b+1,b,b+3,b+2);}}
+  var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));g.setIndex(idx);return g;
+}
+function mergeGeos(list){
+  var pos=[],nor=[];
+  list.forEach(function(g){var n=g.index?g.toNonIndexed():g;n.computeVertexNormals();
+    pos.push.apply(pos,Array.from(n.attributes.position.array));nor.push.apply(nor,Array.from(n.attributes.normal.array));});
+  var out=new THREE.BufferGeometry();out.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));out.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));return out;
+}
+var G={};
+function B(w,h,d){var k='b'+w+'_'+h+'_'+d;return G[k]||(G[k]=new THREE.BoxGeometry(w,h,d));}
+function Cy(rt,rb,h,s){s=s||8;var k='c'+rt+'_'+rb+'_'+h+'_'+s;return G[k]||(G[k]=new THREE.CylinderGeometry(rt,rb,h,s));}
+function Co(r,h,s){s=s||8;var k='o'+r+'_'+h+'_'+s;return G[k]||(G[k]=new THREE.ConeGeometry(r,h,s));}
+function Sp(r,d){d=d||0;var k='s'+r+'_'+d;return G[k]||(G[k]=new THREE.IcosahedronGeometry(r,d));}
+function part(geo,m,x,y,z,noShadow){var mesh=new THREE.Mesh(geo,typeof m==='string'?MC(m):m);mesh.position.set(x||0,y||0,z||0);
+  if(!noShadow){mesh.castShadow=true;mesh.receiveShadow=true;}return mesh;}
+function grp(){var g=new THREE.Group();for(var i=0;i<arguments.length;i++)g.add(arguments[i]);return g;}
+var rnd=(function(){var s=7;return function(){s=(s*16807)%2147483647;return (s-1)/2147483646;};})();
+
+/* ---------- noise / terrain ---------- */
+function hash(x,z){var s=Math.sin(x*127.1+z*311.7)*43758.5453;return s-Math.floor(s);}
+function vnoise(x,z){var ix=Math.floor(x),iz=Math.floor(z),fx=x-ix,fz=z-iz;fx=fx*fx*(3-2*fx);fz=fz*fz*(3-2*fz);
+  var a=hash(ix,iz),b=hash(ix+1,iz),c=hash(ix,iz+1),d=hash(ix+1,iz+1);return a+(b-a)*fx+(c-a)*fz+(a-b-c+d)*fx*fz;}
+function fbm(x,z){var v=0,a=.5;for(var i=0;i<4;i++){v+=vnoise(x,z)*a;x*=2.03;z*=2.03;a*=.5;}return v;}
+function smooth(a,b,x){var t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);}
+function terrainH(x,z){
+  var r=Math.hypot(x,z);var ring=smooth(25,50,r);
+  var side=r>0?smooth(0.15,0.95,z/r):0;
+  var h=-2.4+ring*(7.5+fbm(x*.05+3,z*.05-7)*7)*(1-0.62*side);
+  h+=fbm(x*.18,z*.18)*0.8*ring;
+  var q=Math.round(h/0.7)*0.7;h=h+(q-h)*0.6;
+  return h;
+}
+var TCOL=[[0.3,'#8fb3ad'],[0.9,'#d9c9a3'],[2.2,'#aec493'],[3.8,'#a3b986'],[6,'#6f8a62'],[99,'#b2a38d']].map(function(a){return [a[0],new THREE.Color(a[1])];});
+(function terrain(){
+  var g=new THREE.PlaneGeometry(170,170,160,160);g.rotateX(-Math.PI/2);
+  var p=g.attributes.position,cols=new Float32Array(p.count*3);
+  for(var i=0;i<p.count;i++){var x=p.getX(i),z=p.getZ(i),h=terrainH(x,z);p.setY(i,h);
+    var c=TCOL[TCOL.length-1][1];for(var j=0;j<TCOL.length;j++){if(h<TCOL[j][0]){c=TCOL[j][1];break;}}
+    cols[i*3]=c.r;cols[i*3+1]=c.g;cols[i*3+2]=c.b;}
+  g.setAttribute('color',new THREE.BufferAttribute(cols,3));g.computeVertexNormals();
+  var m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({vertexColors:true,flatShading:true,roughness:1,metalness:0}));
+  m.receiveShadow=false;scene.add(m);
+})();
+(function trees(){
+  var con=mergeGeos([new THREE.ConeGeometry(.32,.5,6).translate(0,.45,0),new THREE.ConeGeometry(.25,.4,6).translate(0,.72,0),new THREE.ConeGeometry(.17,.32,6).translate(0,.94,0),new THREE.CylinderGeometry(.04,.05,.25,5).translate(0,.12,0)]);
+  var bl=[];for(var i=0;i<4;i++){var gg=new THREE.IcosahedronGeometry(.26+rnd()*.06,0);gg.translate((rnd()-.5)*.28,.55+rnd()*.25,(rnd()-.5)*.28);bl.push(gg);}
+  bl.push(new THREE.CylinderGeometry(.04,.05,.35,5).translate(0,.17,0));var broad=mergeGeos(bl);
+  var N=1600,ma=new THREE.MeshStandardMaterial({color:0xffffff,flatShading:true,roughness:1});
+  var A=new THREE.InstancedMesh(con,ma,N),Bm=new THREE.InstancedMesh(broad,ma,N),m4=new THREE.Matrix4(),q=new THREE.Quaternion(),s=new THREE.Vector3(),v=new THREE.Vector3(),col=new THREE.Color();
+  var na=0,nb=0,tries=0;
+  while((na<N||nb<N)&&tries<40000){tries++;
+    var r=16+rnd()*36,a=rnd()*Math.PI*2,x=Math.cos(a)*r,z=Math.sin(a)*r,h=terrainH(x,z);
+    if(h<0.6||h>6.5)continue;
+    var sc=0.6+rnd()*0.7;q.setFromAxisAngle(new THREE.Vector3(0,1,0),rnd()*6.28);s.set(sc,sc*(0.85+rnd()*.4),sc);v.set(x,h-0.05,z);m4.compose(v,q,s);
+    if(h>3.4&&na<N){col.setHSL(0.3+rnd()*.05,0.25+rnd()*.12,0.36+rnd()*.08);A.setMatrixAt(na,m4);A.setColorAt(na,col);na++;}
+    else if(nb<N){col.setHSL(0.24+rnd()*.07,0.3+rnd()*.12,0.48+rnd()*.1);Bm.setMatrixAt(nb,m4);Bm.setColorAt(nb,col);nb++;}
+  }
+  A.count=na;Bm.count=nb;scene.add(A,Bm);
+})();
+var bands=[];
+(function silhouettes(){
+  [[100,9,7,'#9fb3b6',0.45],[120,12,9,'#aabdc4',0.62],[140,15,11,'#bccad3',0.78]].forEach(function(b,bi){
+    var segs=180,pos=[],idx=[];
+    for(var i=0;i<=segs;i++){var a=i/segs*Math.PI*2,x=Math.cos(a)*b[0],z=Math.sin(a)*b[0];
+      var top=b[1]+fbm(Math.cos(a)*3+bi*11,Math.sin(a)*3)*b[2]*2-b[2]*0.6;
+      pos.push(x,-1,z,x,top,z);
+      if(i<segs){var k=i*2;idx.push(k,k+1,k+2,k+1,k+3,k+2);}}
+    var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);
+    var m=new THREE.MeshBasicMaterial({color:b[3],side:THREE.DoubleSide,fog:false});
+    var mesh=new THREE.Mesh(g,m);scene.add(mesh);bands.push({m:m,base:new THREE.Color(b[3]),k:b[4]});
+  });
+})();
+var clouds=[];
+(function(){for(var i=0;i<12;i++){var g=new THREE.Group(),n=4+Math.floor(rnd()*3);
+  for(var j=0;j<n;j++){var r=1.2+rnd()*1.4,m=new THREE.Mesh(Sp(1,1),mat.cloud);m.scale.set(r,r*0.7,r);m.position.set(j*1.5-n*0.7+(rnd()-.5),rnd()*0.6,(rnd()-.5)*1.2);g.add(m);}
+  g.position.set(-90+rnd()*180,15+rnd()*9,-75+rnd()*80);g.userData.v=0.5+rnd()*0.5;scene.add(g);clouds.push(g);}})();
+var boats=[];
+(function seaProps(){
+  [[-15,7,1.4],[19,-12,1.8],[-19,-15,1.2],[22,9,1.1]].forEach(function(p,i){
+    var g=grp(part(Cy(p[2],p[2]+0.4,0.4,7),'#efe3cf',0,0.05,0),part(Cy(p[2]*0.7,p[2],0.3,7),'#b9cfa0',0,0.35,0));
+    g.position.set(p[0],0,p[1]);scene.add(g);
+    if(i===1){var lh=grp(part(Cy(.22,.3,.5,10),'#f7f3ea',0,.75,0),part(Cy(.2,.22,.4,10),'#e07a55',0,1.2,0),part(Cy(.18,.2,.4,10),'#f7f3ea',0,1.6,0),
+      part(Sp(.16,1),mat.bulb,0,1.9,0),part(Co(.24,.24,10),'#3a4644',0,2.12,0));g.add(lh);}
+    if(i===0){g.add(part(Co(.3,.9,6),'#7fa56b',.3,.9,-.2),part(Co(.25,.7,6),'#8db36f',-.4,.8,.3));}
+  });
+  for(var i=0;i<3;i++){
+    var hull=part(B(1.1,.22,.4),'#f7f3ea',0,.11,0),hull2=part(B(.8,.12,.36),'#e07a55',0,.24,0);
+    var mast=part(Cy(.025,.03,1.5),'#8f5e38',.05,1,0);
+    var sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute([0.08,.35,0, 0.08,1.7,0, 0.7,.35,0, 0.02,.4,0, 0.02,1.5,0, -0.5,.4,0],3));sg.computeVertexNormals();
+    var sail=new THREE.Mesh(sg,M(i===1?0xe07a55:0xf5efe2,{side:THREE.DoubleSide}));sail.castShadow=true;
+    var b=grp(hull,hull2,mast,sail);b.userData={r:16+i*2.5,a:i*2.1,s:0.025+i*0.008,ph:i};scene.add(b);boats.push(b);
+  }
+})();
+
+/* ---------- decor builders ---------- */
+function roundTree(s){return grp(part(Cy(.04,.055,.3,6),'#8a5a3c',0,.15,0),part(Sp(.24,0),'#9cc27c',0,.45,0),part(Sp(.16,0),'#8db56d',.1,.36,.07));}
+function sickTree(){return grp(part(Cy(.04,.06,.4,6),'#7a5a3c',0,.2,0),part(Sp(.2,0),'#b8a86a',0,.48,0),part(Sp(.12,0),'#a3925a',-.1,.4,.05),part(Sp(.03,0),'#7a5a3c',.12,.52,.1));}
+function palm(){var g=grp(),x=0;for(var i=0;i<6;i++){x+=0.015*i;g.add(part(Cy(.032,.042,.14,6),'#a0794f',x,.07+i*.13,0));}
+  for(var j=0;j<7;j++){var l=part(B(.05,.015,.4),'#8fbf6e',0,0,0);var a=j/7*Math.PI*2;l.rotation.order='YXZ';l.rotation.set(0,a,0);l.rotateX(0.5);
+    var w=grp(l);l.position.set(0,0,.19);w.rotation.y=a;w.position.set(x,.84,0);l.rotation.set(0.45,0,0);g.add(w);}
+  g.add(part(Sp(.035,0),'#7a5a3c',x+.04,.8,.03),part(Sp(.035,0),'#7a5a3c',x-.03,.8,-.03));return g;}
+function bench(){return grp(part(B(.36,.03,.13),'#b9804f',0,.13,0),part(B(.36,.1,.025),'#b9804f',0,.21,-.055),part(B(.03,.13,.11),'#4a4a48',-.15,.065,0),part(B(.03,.13,.11),'#4a4a48',.15,.065,0));}
+function rock(){var m=part(new THREE.DodecahedronGeometry(.09,0),'#c9c2b4',0,.05,0);m.scale.set(1.3,.8,1);return grp(m,part(new THREE.DodecahedronGeometry(.05,0),'#bdb6a8',.1,.03,.05));}
+function stump(){return grp(part(Cy(.08,.1,.1,7),'#8f6a45',0,.05,0),part(Cy(.075,.075,.012,7),'#d8b98a',0,.106,0,true));}
+function bone(){var g=grp(part(Cy(.022,.022,.2,6),'#f3efe6',0,0,0));g.children[0].rotation.z=Math.PI/2;
+  [-.1,.1].forEach(function(x){[-.022,.022].forEach(function(z){g.add(part(Sp(.03,0),'#f3efe6',x,0,z));});});g.position.y=.04;return grp(g);}
+function prism(r,len,c){var g=new THREE.CylinderGeometry(r,r,len,3);g.rotateZ(Math.PI/2);g.rotateX(-Math.PI/2);return part(g,c);}
+function clinic(){var roof=prism(.32,.56,'#8fbcae');roof.position.y=.5;
+  return grp(part(B(.5,.34,.44),'#f4f1ea',0,.17,0),roof,part(B(.12,.04,.012),'#d9534f',0,.25,.222),part(B(.04,.12,.012),'#d9534f',0,.25,.222),
+    part(B(.1,.17,.012),'#6d8f86',.16,.085,.222),part(B(.1,.08,.012),mat.win,-.16,.2,.222));}
+function dog(){var d=grp(
+  part(B(.28,.28,.6),'#c4874e',0,.42,0),part(B(.26,.24,.26),'#c4874e',0,.62,.33),part(B(.14,.11,.14),'#e2b98b',0,.57,.5),
+  part(B(.05,.04,.03),'#3b2a22',0,.61,.58),part(B(.3,.05,.3),'#e07a55',0,.5,.3),
+  part(Co(.06,.14,4),'#8a5a34',-.08,.8,.3),part(Co(.06,.14,4),'#8a5a34',.08,.8,.3),
+  part(Sp(.022,0),'#2b2622',-.06,.66,.462),part(Sp(.022,0),'#2b2622',.06,.66,.462));
+  [-.09,.09].forEach(function(x){[-.2,.2].forEach(function(z){d.add(part(B(.08,.28,.08),'#a86f3c',x,.14,z));});});
+  var tail=part(Cy(.025,.035,.26,5),'#a86f3c',0,.55,-.33);tail.rotation.x=-0.7;d.add(tail);
+  d.position.y=.12;return grp(part(B(.6,.12,.9),'#d9cfbf',0,.06,0),d);}
+function bins(){var g=grp();[[-.32,'#5a93c4','#3f78a8'],[0,'#f0c24f','#d9a62e'],[.32,'#6fae6a','#4f8f4c']].forEach(function(b){
+  g.add(part(B(.26,.36,.26),b[1],b[0],.18,0),part(B(.29,.04,.29),b[2],b[0],.38,0),part(B(.1,.1,.012),'#ffffff',b[0],.22,.131));});
+  return grp(part(B(1.05,.05,.45),'#d8cfbf',0,.025,0),g);}
+function bag(){var g=grp(part(B(.26,.34,.1),'#f7f6f0',0,.19,0),part(Sp(.018,0),'#2b2622',-.05,.24,.052),part(Sp(.018,0),'#2b2622',.05,.24,.052));
+  [-.07,.07].forEach(function(x){var t=part(new THREE.TorusGeometry(.055,.014,5,12,Math.PI),'#f7f6f0',x,.36,0);g.add(t);});g.rotation.z=0.12;return grp(g);}
+function umbrella(){return grp(part(Cy(.012,.012,.5,5),'#f7f3ea',0,.25,0),part(Co(.3,.12,8),'#e07a55',0,.52,0),part(B(.3,.02,.14),'#f6d77e',.18,.01,.1));}
+function bucket(){return grp(part(Cy(.06,.05,.09,8),'#5a93c4',0,.045,0),part(Cy(.03,.03,.02,6),'#f0c24f',.1,.01,.04));}
+function statue(){var y0=.58,g=grp(part(B(.62,.3,.62),'#d8cdb8',0,.15,0),part(B(.5,.22,.5),'#cfc2aa',0,.41,0),part(B(.4,.06,.4),'#e3d9c6',0,.55,0));
+  var s=grp(part(Cy(.09,.2,.62,8),'#7fbca6',0,y0+.31,0),part(Sp(.1,0),'#7fbca6',0,y0+.62,0),part(Sp(.075,1),'#86c3ad',0,y0+.74,0));
+  for(var i=0;i<7;i++){var a=-0.9+i*0.3,c=part(Co(.016,.09,4),'#86c3ad',Math.sin(a)*.06,y0+.79,Math.cos(a)*.06);c.rotation.order='YXZ';c.rotation.set(0.95,a,0);s.add(c);}
+  var arm=part(Cy(.026,.03,.32,6),'#7fbca6',.12,y0+.82,0);arm.rotation.z=-0.2;s.add(arm);
+  s.add(part(Cy(.026,.02,.08,6),'#d9b44a',.16,y0+1.0,0),part(Co(.045,.1,6),mat.flame,.165,y0+1.09,0));
+  var la=part(Cy(.025,.03,.2,6),'#7fbca6',-.12,y0+.5,.03);la.rotation.z=.3;s.add(la,part(B(.1,.15,.03),'#86c3ad',-.15,y0+.47,.08));
+  var c1=part(new THREE.TorusGeometry(.03,.009,4,8),'#7a7f80',.13,y0+.02,.16);c1.rotation.x=Math.PI/2;var c2=part(new THREE.TorusGeometry(.03,.009,4,8),'#7a7f80',.18,y0+.02,.18);
+  s.add(c1,c2);g.add(s);g.scale.setScalar(1.2);return g;}
+function museum(){var g=grp(part(B(.52,.26,.36),'#efe8da',0,.13,0),part(B(.58,.04,.42),'#cdbfa6',0,.28,0));
+  var p=prism(.16,.58,'#e3d9c6');p.position.y=.36;p.scale.y=.6;g.add(p);
+  [-.2,-.07,.07,.2].forEach(function(x){g.add(part(Cy(.02,.02,.24,6),'#fbf8f1',x,.12,.2));});g.add(part(B(.12,.08,.012),mat.win,0,.17,.182));return g;}
+function infoBoard(){return grp(part(Cy(.015,.015,.26,5),'#3a4644',-.1,.13,0),part(Cy(.015,.015,.26,5),'#3a4644',.1,.13,0),part(B(.28,.17,.02),'#4f6b64',0,.24,0));}
+function pianoStairs(){var g=grp();
+  for(var i=0;i<5;i++){var h=.08*(i+1),z=.36-i*.2;g.add(part(B(.9,h,.2),'#e9e4da',0,h/2,z),part(B(.9,.012,.2),'#fbfaf6',0,h+.006,z));
+    [-.34,-.22,-.04,.08,.2,.32].forEach(function(x){g.add(part(B(.045,.016,.12),'#2b2622',x,h+.012,z-.04,true));});}
+  g.add(part(B(.9,.44,.3),'#e9e4da',0,.22,-.6),part(B(.06,.5,1.24),'#cfc8bb',-.48,.25,-.18),part(B(.06,.5,1.24),'#cfc8bb',.48,.25,-.18));return g;}
+function trafficLight(){return grp(part(Cy(.025,.03,.9,6),'#3a4644',0,.45,0),part(B(.15,.38,.12),'#2f3a3a',0,.95,0),
+  part(Sp(.042,1),mat.red,0,1.07,.065),part(Sp(.042,1),'#7a6a3a',0,.95,.065),part(Sp(.042,1),'#3a5a40',0,.83,.065));}
+function zebra(){var g=grp();for(var i=0;i<5;i++)g.add(part(B(.5,.006,.07),'#fbfaf6',0,.004,-.24+i*.12,true));return g;}
+function booth(){return grp(part(B(.34,.48,.34),'#e8b9a4',0,.24,0),part(B(.38,.04,.38),'#c98e78',0,.5,0),part(B(.14,.3,.012),'#5b4a44',-.06,.15,.172),part(B(.2,.06,.012),mat.win,0,.4,.172),
+  part(Sp(.03,0),'#f6d77e',.1,.56,0),part(Sp(.025,0),'#6fae6a',-.08,.55,.06));}
+
+var THEME={
+  L4:{main:dog,mainScale:1.25,items:[clinic,sickTree,stump,bone,roundTree,bench,stump,rock],outer:roundTree},
+  L5:{main:bins,mainScale:1.15,items:[bag,umbrella,palm,bucket,bench,rock,palm],outer:palm,pier:270},
+  L6:{main:statue,mainScale:1.0,items:[museum,roundTree,infoBoard,bench,roundTree,rock],outer:roundTree},
+  R2:{main:pianoStairs,mainScale:1.0,items:[trafficLight,booth,zebra,roundTree,bench,rock],outer:roundTree}
+};
+function gridPoints(n){
+  var c=Math.max(0.46,Math.min(0.62,0.62-(n-4)*0.03)),pts=[];
+  for(var row=-4;row<=4;row++){var z=row*c*0.866;for(var col=-4;col<=4;col++){var x=col*c+(row&1?c/2:0);
+    if(Math.hypot(x,z)>1.12)continue;if(Math.hypot(x,z+0.58)<0.8)continue;pts.push([x,z]);}}
+  pts.sort(function(a,b){return Math.atan2(a[0],-a[1])-Math.atan2(b[0],-b[1]);});
+  return {c:c,pts:pts};
+}
+
+/* ---------- islands ---------- */
+var GEO={sand:new THREE.CylinderGeometry(2.42,2.62,0.24,6),dirt:new THREE.CylinderGeometry(GR,GR+0.08,0.4,6),grass:new THREE.CylinderGeometry(GR,GR,0.06,6),
+  path:ringGeo(PATH_R+PATH_W/2,PATH_R-PATH_W/2,5,0.018),outline:ringGeo(2.0,1.88,1,0),pool:new THREE.CircleGeometry(0.48,20),string:new THREE.SphereGeometry(0.022,6,4),
+  crystal:new THREE.OctahedronGeometry(0.11,0)};
+var pickables=[];
+function buildIsland(d){
+  var g=new THREE.Group();g.position.set(d.pos.x,0,d.pos.y);var body=new THREE.Group();g.add(body);
+  var sand=part(GEO.sand,mat.sand,0,-0.03,0);sand.castShadow=false;
+  var dirt=part(GEO.dirt,mat.dirt,0,TOP-0.25,0),grass=part(GEO.grass,mat.grass,0,TOP-0.03,0);
+  var path=part(GEO.path,mat.path,0,TOP+0.006,0);path.castShadow=false;
+  var ol=new THREE.Mesh(GEO.outline,mat.outline.clone());ol.position.y=TOP+0.01;ol.renderOrder=2;
+  body.add(sand,dirt,grass,path,ol);
+  [sand,dirt,grass].forEach(function(m){m.userData.island=d;pickables.push(m);});
+  var top=new THREE.Group();top.position.y=TOP;body.add(top);
+  [1,4].forEach(function(k){var p=hexPt(PATH_R+0.24,k);
+    top.add(part(Cy(0.022,0.03,0.56,6),mat.pole,p[0],.28,p[1]),part(Co(0.09,0.08,6),mat.pole,p[0],.62,p[1]),part(Sp(0.055,0),mat.bulb,p[0],.55,p[1],true));
+    var pool=new THREE.Mesh(GEO.pool,mat.pool);pool.rotation.x=-Math.PI/2;pool.position.set(p[0],.012,p[1]);pool.renderOrder=3;top.add(pool);});
+  var per=6,inst=new THREE.InstancedMesh(GEO.string,mat.bulb,per*6),m4=new THREE.Matrix4(),n=0;
+  for(var k=0;k<6;k++){var a=hexPt(1.95,k),b=hexPt(1.95,k+1);for(var j=1;j<=per;j++){var t=j/(per+1);m4.makeTranslation(a[0]+(b[0]-a[0])*t,.035,a[1]+(b[1]-a[1])*t);inst.setMatrixAt(n++,m4);}}
+  top.add(inst);
+  /* theme */
+  var th=THEME[d.id];
+  var main=th.main();main.scale.multiplyScalar(th.mainScale);main.position.set(0,0,-0.58);top.add(main);
+  var gp=gridPoints(th.items.length),step=gp.pts.length/th.items.length,s=gp.c/0.62;
+  th.items.forEach(function(fn,i){var p=gp.pts[Math.floor(i*step+step/2)%gp.pts.length];var o=fn();o.scale.multiplyScalar(s);
+    o.position.set(p[0]+(rnd()-.5)*.06,0,p[1]+(rnd()-.5)*.06);o.rotation.y=(rnd()-.5)*0.6;top.add(o);});
+  [2,3].forEach(function(k){var p=hexPt(1.84,k);var o=th.outer();o.position.set(p[0],0,p[1]);o.rotation.y=rnd()*6;top.add(o);});
+  if(th.pier!==undefined){var a2=th.pier*Math.PI/180,dx=Math.sin(a2),dz=Math.cos(a2),pg=new THREE.Group();
+    for(var i2=0;i2<7;i2++){var r=1.75+i2*0.17;var pl=part(B(.15,.04,.46),i2%2?mat.wood:mat.woodDark,dx*r,-.14,dz*r);pl.rotation.y=Math.atan2(dx,dz);pg.add(pl);}
+    [[2.2,.2],[2.2,-.2],[2.75,.2],[2.75,-.2]].forEach(function(q){var px=dx*q[0]+dz*q[1],pz=dz*q[0]-dx*q[1];pg.add(part(Cy(.03,.03,.5,5),mat.woodDark,px,-.36,pz));});
+    top.add(pg);}
+  /* crystals + flag */
+  var nC=d.total,angs=nC===1?[0]:[-45,-15,15,45];d.crystals=[];
+  for(var c=0;c<nC;c++){var a3=angs[c]*Math.PI/180;
+    var ped=part(Cy(.07,.09,.08,6),'#e3dccd',Math.sin(a3)*1.8,.04,Math.cos(a3)*1.8);
+    var cm=M(0xe8e6e1,{emissive:new THREE.Color(0xf2c14e),emissiveIntensity:0});
+    var cr=part(GEO.crystal,cm,Math.sin(a3)*1.8,.24,Math.cos(a3)*1.8);cr.scale.set(1,1.6,1);
+    top.add(ped,cr);d.crystals.push(cr);}
+  var fp=hexPt(1.84,5);
+  top.add(part(Cy(.015,.02,1.15,5),'#e9e4da',fp[0],.575,fp[1]),part(Sp(.03,0),'#f2c14e',fp[0],1.17,fp[1]));
+  var flag=part(B(.3,.18,.012),'#e07a55',fp[0]+.16,.2,fp[1]);top.add(flag);d.flag=flag;d.flagY=.2;
+  d.group=g;d.body=body;d.outline=ol;d.lift=0;d.hover=0;scene.add(g);
+}
+ISL.forEach(buildIsland);
+
+/* ---------- Live magazine islands ---------- */
+function robotProp(){var g=grp(part(B(.36,.34,.28),'#cfd8dc',0,.31,0),part(B(.3,.24,.26),'#eef2f3',0,.6,0),
+  part(Sp(.035,1),mat.win,-.07,.62,.135),part(Sp(.035,1),mat.win,.07,.62,.135),part(Cy(.01,.01,.12,5),'#3a4644',0,.78,0),part(Sp(.035,0),'#e07a55',0,.86,0),
+  part(B(.08,.14,.08),'#90a4ae',-.1,.07,0),part(B(.08,.14,.08),'#90a4ae',.1,.07,0),part(B(.06,.2,.06),'#b0bec5',-.22,.32,0),part(B(.06,.2,.06),'#b0bec5',.22,.32,0));
+  var desk=part(B(.42,.18,.28),'#e3d9c6',.48,.09,.18),base=part(B(.3,.02,.2),'#3a4644',.48,.19,.2),scr=part(B(.3,.2,.015),mat.win,.48,.29,.1);scr.rotation.x=-.25;g.add(desk,base,scr);return g;}
+function stoneProp(){var g=grp(part(B(.24,.08,.12),'#9e978a',0,.04,0));
+  for(var i=0;i<5;i++){var a=i/5*Math.PI*2,t=grp(part(B(.1,.38,.09),'#b8b2a5',-.09,.19,0),part(B(.1,.38,.09),'#b8b2a5',.09,.19,0),part(B(.32,.08,.11),'#a9a294',0,.42,0));
+    t.position.set(Math.sin(a)*.55,0,Math.cos(a)*.55);t.rotation.y=a;g.add(t);}return g;}
+function deliveryProp(){var g=grp(part(B(.34,.26,.44),'#e8604c',0,.24,0),part(B(.36,.04,.46),'#f07a64',0,.39,0),part(B(.2,.06,.012),mat.win,0,.28,.226),
+  part(Cy(.006,.006,.42,5),'#3a4644',.12,.6,-.18),part(B(.1,.06,.006),'#f2c14e',.17,.78,-.18),part(B(.22,.04,.22),'#e9d3a8',.42,.02,.18));
+  [-.15,0,.15].forEach(function(z){[-.19,.19].forEach(function(x){var w=part(Cy(.06,.06,.04,10),'#2b2622',x,.07,z);w.rotation.z=Math.PI/2;g.add(w);});});return g;}
+function filmProp(){var g=grp(part(B(.36,.26,.04),'#2b2622',0,.2,0));var top=grp(part(B(.38,.07,.04),'#f7f3ea',0,0,0));
+  [-.13,-.03,.07,.16].forEach(function(x){top.add(part(B(.04,.072,.042),'#2b2622',x,0,0));});top.position.set(0,.38,0);top.rotation.z=-.25;g.add(top);
+  var st=part(new THREE.OctahedronGeometry(.13,0),'#f2c14e',.45,.42,.12);st.scale.z=.35;g.add(st,part(Cy(.06,.08,.24,8),'#e3d9c6',.45,.12,.12));
+  var lamp=part(Cy(.07,.04,.14,8),'#3a4644',-.42,.45,.1);lamp.rotation.z=.8;g.add(part(Cy(.012,.012,.42,5),'#3a4644',-.45,.21,.1),lamp);return g;}
+function cactusProp(){var g=grp(),pad=function(x,y,z,s,rz,c){var m=part(Sp(1,1),c||'#6f9c5a',x,y,z);m.scale.set(.2*s,.25*s,.07*s);m.rotation.z=rz||0;return m;};
+  g.add(pad(0,.24,0,1),pad(-.13,.5,0,.8,.5),pad(.14,.52,0,.8,-.45),pad(0,.7,0,.6,0,'#7fae66'));
+  [[-.18,.66],[.2,.68],[0,.86]].forEach(function(p){g.add(part(Sp(.04,0),'#c2473a',p[0],p[1],.05));});
+  g.add(pad(.48,.16,.15,.6),pad(.5,.36,.15,.45,.3));
+  var moth=grp(part(Cy(.015,.02,.08,5),'#7a6650',0,0,0),part(B(.14,.008,.06),'#b39a74',0,.01,0));moth.position.set(-.35,.8,.2);moth.rotation.y=.6;g.add(moth);return g;}
+function corianderProp(){var g=grp(part(Cy(.16,.12,.2,10),'#c8794f',0,.1,0),part(Cy(.15,.15,.02,10),'#5a4030',0,.2,0));
+  for(var i=0;i<9;i++){var a=i*2.4,r=.04+(i%3)*.04;g.add(part(Sp(.07,0),i%2?'#7cba5c':'#8fca6a',Math.cos(a)*r,.28+(i%4)*.05,Math.sin(a)*r));}
+  g.add(part(Cy(.26,.26,.03,16),'#e7c27a',.48,.015,.2));for(var j=0;j<6;j++){var b=j*1.05;g.add(part(Sp(.03,0),'#6fae5a',.48+Math.cos(b)*.14,.04,.2+Math.sin(b)*.14,true));}return g;}
+function stageProp(){var g=grp(part(B(.9,.08,.6),'#3f3a4a',0,.04,0),part(Cy(.01,.012,.44,6),'#3a4644',0,.3,0),part(Sp(.04,1),'#c0c4c8',0,.54,0),part(Cy(.08,.1,.02,8),'#3a4644',0,.09,0));
+  [-.36,.36].forEach(function(x){g.add(part(Cy(.012,.012,.6,5),'#3a4644',x,.38,-.24));var l=part(Co(.06,.1,8),mat.win,x,.66,-.2);l.rotation.x=.9;g.add(l);});
+  g.add(part(Sp(.05,0),'#e58fb0',.3,.14,.18),part(Sp(.04,0),'#f6d77e',-.28,.13,.2));return g;}
+function notesProp(){var g=grp(),cols=['#e8a0b4','#8fc7a3','#8db3e2','#f2c14e'];
+  for(var i=0;i<6;i++){var n=part(B(.42,.025,.2),cols[i%4],0,.0125+i*.027,0);n.rotation.y=(i%2?.12:-.08);g.add(n);}
+  for(var j=0;j<4;j++){var m=part(B(.42,.025,.2),cols[(j+2)%4],.38,.0125+j*.027,.22);m.rotation.y=.5+j*.05;g.add(m);}
+  var coin=part(Cy(.11,.11,.03,18),'#e3b448',-.36,.12,.18);coin.rotation.x=Math.PI/2;g.add(coin);return g;}
+function habitProp(){var g=grp();for(var i=0;i<4;i++){var h=.08*(i+1);g.add(part(B(.5,h,.16),i%2?'#e9e4da':'#f3eee4',0,h/2,.24-i*.16));}
+  g.add(part(Cy(.07,.055,.1,8),'#e07a55',0,.37,-.24),part(Cy(.008,.008,.12,5),'#6fae5a',0,.48,-.24));
+  var l1=part(Sp(1,0),'#7cba5c',-.04,.54,-.24),l2=part(Sp(1,0),'#8fca6a',.04,.56,-.24);l1.scale.set(.05,.02,.03);l2.scale.set(.05,.02,.03);g.add(l1,l2);return g;}
+function bookProp(){var g=grp(part(B(.3,.06,.24),'#d8cfbf',0,.03,0));var a=part(B(.15,.015,.22),'#fbfaf6',-.075,.075,0),b=part(B(.15,.015,.22),'#fbfaf6',.075,.075,0);
+  a.rotation.z=.18;b.rotation.z=-.18;g.add(a,b);return g;}
+var MAGPROP={AI:robotProp,STN:stoneProp,BOT:deliveryProp,JE:filmProp,PP:cactusProp,COR:corianderProp,AG:stageProp,BN:notesProp,MH:habitProp};
+function buildMagIsland(d){
+  var g=new THREE.Group();g.position.set(d.pos.x,0,d.pos.y);g.scale.setScalar(0.62);var body=new THREE.Group();g.add(body);
+  var sand=part(GEO.sand,mat.sand,0,-0.03,0);sand.castShadow=false;
+  var dirt=part(GEO.dirt,mat.dirt,0,TOP-0.25,0),grass=part(GEO.grass,mat.grass,0,TOP-0.03,0);
+  var path=part(GEO.path,mat.path,0,TOP+0.006,0);path.castShadow=false;
+  var ol=new THREE.Mesh(GEO.outline,mat.outline.clone());ol.position.y=TOP+0.01;ol.renderOrder=2;
+  body.add(sand,dirt,grass,path,ol);[sand,dirt,grass].forEach(function(m){m.userData.island=d;pickables.push(m);});
+  var top=new THREE.Group();top.position.y=TOP;body.add(top);
+  var main=MAGPROP[d.id]();main.scale.multiplyScalar(1.6);main.position.set(0,0,-0.15);top.add(main);
+  [2,3].forEach(function(k){var p=hexPt(1.84,k),o=d.id==='PP'?cactusProp():roundTree();if(d.id==='PP')o.scale.multiplyScalar(.6);o.position.set(p[0],0,p[1]);o.rotation.y=rnd()*6;top.add(o);});
+  var lp=hexPt(PATH_R+0.24,4);
+  top.add(part(Cy(0.022,0.03,0.56,6),mat.pole,lp[0],.28,lp[1]),part(Co(0.09,0.08,6),mat.pole,lp[0],.62,lp[1]),part(Sp(0.055,0),mat.bulb,lp[0],.55,lp[1],true));
+  var pool=new THREE.Mesh(GEO.pool,mat.pool);pool.rotation.x=-Math.PI/2;pool.position.set(lp[0],.012,lp[1]);pool.renderOrder=3;top.add(pool);
+  d.crystals=[];d.flag=null;d.flagY=.2;
+  if(d.total){
+    top.add(part(Cy(.07,.09,.08,6),'#e3dccd',0,.04,1.8));
+    var cr=part(GEO.crystal,M(0xe8e6e1,{emissive:new THREE.Color(0xf2c14e),emissiveIntensity:0}),0,.24,1.8);cr.scale.set(1,1.6,1);top.add(cr);d.crystals.push(cr);
+    var fp=hexPt(1.84,5);top.add(part(Cy(.015,.02,1.15,5),'#e9e4da',fp[0],.575,fp[1]),part(Sp(.03,0),'#f2c14e',fp[0],1.17,fp[1]));
+    var flag=part(B(.3,.18,.012),'#6aa89b',fp[0]+.16,.2,fp[1]);top.add(flag);d.flag=flag;
+  }else{var bk=bookProp();bk.position.set(0,0,1.75);bk.scale.multiplyScalar(1.4);top.add(bk);}
+  d.group=g;d.body=body;d.outline=ol;d.lift=0;d.hover=0;scene.add(g);
+}
+MAG.forEach(buildMagIsland);
+
+function buildBridge(A,Bb){
+  var a=new THREE.Vector2(A.pos.x,A.pos.y),b=new THREE.Vector2(Bb.pos.x,Bb.pos.y);
+  var u=b.clone().sub(a).normalize(),nrm=new THREE.Vector2(-u.y,u.x);
+  var pA=a.clone().addScaledVector(u,PATH_IN),pB=b.clone().addScaledVector(u,-PATH_IN);
+  var span=pA.distanceTo(pB),arc=0.1,base=TOP+0.035,yaw=Math.atan2(-u.y,u.x),g=new THREE.Group();scene.add(g);
+  function at(s){return new THREE.Vector2(pA.x+(pB.x-pA.x)*s,pA.y+(pB.y-pA.y)*s);}
+  function hy(s){return base+arc*Math.sin(Math.PI*s);}
+  var N=9,plank=new THREE.BoxGeometry(span/N*0.84,0.045,0.52);
+  for(var i=0;i<N;i++){var s=(i+0.5)/N,p=at(s),m=part(plank,i%2?mat.wood:mat.woodDark,p.x,hy(s),p.y);
+    m.rotation.order='YXZ';m.rotation.set(0,yaw,Math.atan(arc*Math.PI*Math.cos(Math.PI*s)/span));g.add(m);}
+  [-1,1].forEach(function(side){var pts=[];for(var i=0;i<=12;i++){var s=i/12,p=at(s).addScaledVector(nrm,side*0.27);pts.push(new THREE.Vector3(p.x,hy(s)+0.2,p.y));}
+    g.add(part(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),24,0.016,5,false),mat.woodDark));
+    [0,0.25,0.5,0.75,1].forEach(function(s){var p=at(s).addScaledVector(nrm,side*0.27);g.add(part(Cy(0.02,0.022,0.22,6),mat.woodDark,p.x,hy(s)+0.1,p.y));});});
+  [0.38,0.62].forEach(function(s){var p=at(s),h=hy(s)+0.15,pl=part(Cy(0.05,0.06,1,6),mat.woodDark,p.x,h/2-0.15,p.y);pl.scale.y=h;g.add(pl);});
+}
+for(var bi=0;bi<ISL.length-1;bi++)buildBridge(ISL[bi],ISL[bi+1]);
+
+/* ---------- path network + Dijkstra ---------- */
+var V3=THREE.Vector3,NODES=[],ADJ=[];
+function addNode(v){NODES.push(v);ADJ.push([]);return NODES.length-1;}
+function link(a,b,pts){pts=pts||[];var len=0,prev=NODES[a];pts.concat([NODES[b]]).forEach(function(p){len+=prev.distanceTo(p);prev=p;});
+  ADJ[a].push({to:b,w:len,pts:pts});ADJ[b].push({to:a,w:len,pts:pts.slice().reverse()});}
+ISL.forEach(function(d){d.nodes=[];
+  for(var k=0;k<6;k++){var v=hexPt(PATH_R,k),m=hexPt(PATH_IN,k+0.5);
+    d.nodes.push(addNode(new V3(d.pos.x+v[0],TOP+0.012,d.pos.y+v[1])));d.nodes.push(addNode(new V3(d.pos.x+m[0],TOP+0.012,d.pos.y+m[1])));}
+  for(var i=0;i<12;i++)link(d.nodes[i],d.nodes[(i+1)%12]);});
+var BRIDGE_K=[[2,5],[1,4],[0,3]],bridgeLinks=[];
+for(var bj=0;bj<ISL.length-1;bj++){var A_=ISL[bj],B_=ISL[bj+1],na=A_.nodes[BRIDGE_K[bj][0]*2+1],nb=B_.nodes[BRIDGE_K[bj][1]*2+1],pa=NODES[na],pb=NODES[nb],bpts=[];
+  for(var j2=1;j2<8;j2++){var s2=j2/8;bpts.push(new V3(pa.x+(pb.x-pa.x)*s2,TOP+0.06+0.1*Math.sin(Math.PI*s2),pa.z+(pb.z-pa.z)*s2));}
+  link(na,nb,bpts);bridgeLinks.push({from:A_,to:B_,pts:[pa].concat(bpts,[pb])});}
+function route(a,b){var n=NODES.length,dist=[],prev=[],pe=[],done=[];for(var i=0;i<n;i++){dist.push(Infinity);prev.push(-1);done.push(false);}dist[a]=0;
+  for(var it=0;it<n;it++){var u=-1;for(var i2=0;i2<n;i2++)if(!done[i2]&&(u<0||dist[i2]<dist[u]))u=i2;if(u<0||dist[u]===Infinity)break;done[u]=true;if(u===b)break;
+    ADJ[u].forEach(function(e){if(dist[u]+e.w<dist[e.to]){dist[e.to]=dist[u]+e.w;prev[e.to]=u;pe[e.to]=e;}});}
+  var out=[NODES[b].clone()],c=b;while(c!==a&&prev[c]>=0){var e=pe[c];for(var k=e.pts.length-1;k>=0;k--)out.unshift(e.pts[k].clone());out.unshift(NODES[prev[c]].clone());c=prev[c];}
+  return out;}
+
+/* ---------- learning routes ---------- */
+var routeTime={value:0},routes=[],routesOn=false;
+function makeRoute(pts,closed,rel){var curve=new THREE.CatmullRomCurve3(pts,closed,'catmullrom',0.05),len=curve.getLength();
+  var m=new THREE.ShaderMaterial({uniforms:{uTime:routeTime,uLen:{value:len},uStyle:{value:2},uColor:{value:new THREE.Color(0xe07a55)},uOp:{value:.82}},transparent:true,depthWrite:false,
+    vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'uniform float uTime,uLen,uStyle,uOp;uniform vec3 uColor;varying vec2 vUv;void main(){float u=vUv.x*uLen*5.-uTime*1.4;if(uStyle>.5&&uStyle<1.5&&fract(u)>.3)discard;if(uStyle>1.5&&fract(u)>.6)discard;gl_FragColor=vec4(uColor,uOp);}'});
+  var mesh=new THREE.Mesh(new THREE.TubeGeometry(curve,Math.max(24,Math.round(len*14)),0.035,6,closed),m);mesh.position.y=0.03;mesh.visible=false;mesh.renderOrder=4;scene.add(mesh);
+  var r={mesh:mesh,rel:rel};routes.push(r);return r;}
+ISL.forEach(function(d){d.ring=makeRoute(d.nodes.map(function(i){return NODES[i].clone();}),true,[d.id]);});
+bridgeLinks.forEach(function(b){b.route=makeRoute(b.pts.map(function(p){return p.clone();}),false,[b.from.id,b.to.id]);});
+
+/* ---------- chibi residents ---------- */
+var LINES=[];
+ISL.forEach(function(d){LINES.push({pts:route(d.nodes[0],d.nodes[6]),home:d.id,n:4});});
+bridgeLinks.forEach(function(b){LINES.push({pts:route(b.from.nodes[0],b.to.nodes[0]),home:b.from.id,mix:b.to.id,n:3});});
+var ROLES={L4:['trainer','researcher'],L5:['student','student'],L6:['guide','tourist'],R2:['dancer','bike']};
+var BODYC={trainer:'#e07a55',researcher:'#f4f1ea',student:'#6aa0c8',guide:'#3f5a7a',tourist:'#8fb874',dancer:'#e58fb0',bike:'#5a93c4'};
+var SKIN=['#f1c9a5','#e0ac85','#c98e64','#f6d5b8'],HAIR=['#2b2622','#5a3b2a','#8a5a34','#1f1c1a'];
+var walkers=[];
+LINES.forEach(function(L){var cum=[0];for(var i=1;i<L.pts.length;i++)cum.push(cum[i-1]+L.pts[i].distanceTo(L.pts[i-1]));L.cum=cum;L.len=cum[cum.length-1];
+  for(var k=0;k<L.n;k++){var isl=(L.mix&&k%2)?L.mix:L.home,rl=ROLES[isl][k%2],bike=rl==='bike';
+    walkers.push({L:L,s:L.len*(k+0.5)/L.n,dir:k%2?-1:1,speed:bike?0.62+rnd()*0.08:0.32+rnd()*0.08,pause:0,phase:rnd(),role:rl,isl:isl,pos:new V3(),head:0,
+      skin:SKIN[Math.floor(rnd()*4)],hair:HAIR[Math.floor(rnd()*4)]});}});
+var NW=walkers.length;
+function IM(geo,color,count,shadow){var m=new THREE.InstancedMesh(geo,M(color),Math.max(1,count));m.count=count;m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  m.castShadow=!!shadow;m.frustumCulled=false;scene.add(m);return m;}
+var PART={
+  leg:IM(new THREE.BoxGeometry(.032,.085,.034).translate(0,-.0425,0),'#3a4048',NW*2,true),
+  arm:IM(new THREE.BoxGeometry(.024,.08,.026).translate(0,-.04,0),'#ffffff',NW*2,false),
+  body:IM(mergeGeos([new THREE.CylinderGeometry(.047,.05,.09,10),new THREE.SphereGeometry(.047,10,5,0,Math.PI*2,0,Math.PI/2).translate(0,.045,0),new THREE.SphereGeometry(.05,10,5,0,Math.PI*2,Math.PI/2,Math.PI/2).translate(0,-.045,0)]),'#ffffff',NW,true),
+  head:IM(new THREE.SphereGeometry(.075,12,10),'#ffffff',NW,true),
+  hair:IM(new THREE.SphereGeometry(.079,12,8,0,Math.PI*2,0,Math.PI*0.55),'#ffffff',NW,false),
+  eye:IM(new THREE.SphereGeometry(.011,6,4),'#2b2622',NW*2,false)
+};
+var shadowMesh=new THREE.InstancedMesh(new THREE.CircleGeometry(.075,16).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.22,depthWrite:false}),NW);
+shadowMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);shadowMesh.frustumCulled=false;shadowMesh.renderOrder=3;scene.add(shadowMesh);
+var ACC={
+  hat:{fit:['student'],geo:mergeGeos([new THREE.CylinderGeometry(.1,.1,.012,14),new THREE.CylinderGeometry(.06,.07,.05,12).translate(0,.03,0)]),c:'#f2c14e',at:[0,.345,0]},
+  bag:{fit:['student','tourist'],geo:new THREE.BoxGeometry(.06,.07,.025),c:'#f7f6f0',at:[.075,.1,.02]},
+  dog:{fit:['trainer'],geo:mergeGeos([new THREE.BoxGeometry(.05,.05,.12).translate(0,.065,0),new THREE.BoxGeometry(.052,.05,.05).translate(0,.1,.07),new THREE.BoxGeometry(.015,.04,.015).translate(-.016,.02,.04),new THREE.BoxGeometry(.015,.04,.015).translate(.016,.02,.04),new THREE.BoxGeometry(.015,.04,.015).translate(-.016,.02,-.04),new THREE.BoxGeometry(.015,.04,.015).translate(.016,.02,-.04)]),c:'#c4874e',at:[.14,0,.04]},
+  bike:{fit:['bike'],geo:mergeGeos([new THREE.TorusGeometry(.05,.008,4,12).rotateY(Math.PI/2).translate(0,.05,.085),new THREE.TorusGeometry(.05,.008,4,12).rotateY(Math.PI/2).translate(0,.05,-.085),new THREE.BoxGeometry(.012,.012,.18).translate(0,.095,0),new THREE.BoxGeometry(.012,.07,.012).translate(0,.085,-.03),new THREE.BoxGeometry(.012,.07,.012).translate(0,.11,.08),new THREE.BoxGeometry(.09,.01,.01).translate(0,.145,.08)]),c:'#2f3a3a',at:[0,0,0]},
+  flag:{fit:['guide'],geo:mergeGeos([new THREE.CylinderGeometry(.006,.006,.22,5).translate(0,.11,0),new THREE.BoxGeometry(.08,.05,.004).translate(.04,.2,0)]),c:'#e07a55',at:[-.075,.08,.03]}
+};
+Object.keys(ACC).forEach(function(k){var a=ACC[k],list=walkers.filter(function(w){return a.fit.indexOf(w.role)>=0;});a.list=list;a.mesh=IM(a.geo,a.c,list.length,true);});
+(function paint(){var c=new THREE.Color();walkers.forEach(function(w,i){
+  PART.body.setColorAt(i,c.set(BODYC[w.role]));PART.head.setColorAt(i,c.set(w.skin));PART.hair.setColorAt(i,c.set(w.hair));
+  PART.arm.setColorAt(i*2,c.set(w.role==='researcher'?'#f4f1ea':w.skin));PART.arm.setColorAt(i*2+1,c);});
+  ['body','head','hair','arm'].forEach(function(k){PART[k].instanceColor.needsUpdate=true;});})();
+function badgeTex(kind){var cv=document.createElement('canvas');cv.width=cv.height=128;var g=cv.getContext('2d');
+  g.fillStyle='#fffdf9';g.beginPath();g.arc(64,64,58,0,7);g.fill();g.lineWidth=8;g.strokeStyle='#e07a55';g.beginPath();g.arc(64,64,53,0,7);g.stroke();
+  g.strokeStyle='#2b2622';g.fillStyle='#2b2622';g.lineWidth=6;g.lineCap='round';g.lineJoin='round';
+  if(kind==='L4'){g.beginPath();g.moveTo(46,64);g.lineTo(82,64);g.stroke();[[42,56],[42,72],[86,56],[86,72]].forEach(function(p){g.beginPath();g.arc(p[0],p[1],8,0,7);g.stroke();});}
+  else if(kind==='L5'){for(var i=0;i<3;i++){var a0=i*2.094-1.75,a1=a0+1.45;g.beginPath();g.arc(64,64,24,a0,a1);g.stroke();
+    var tx=64+Math.cos(a1)*24,ty=64+Math.sin(a1)*24,dx=-Math.sin(a1),dy=Math.cos(a1),nx=Math.cos(a1),ny=Math.sin(a1);
+    g.beginPath();g.moveTo(tx+dx*8,ty+dy*8);g.lineTo(tx-dx*2+nx*8,ty-dy*2+ny*8);g.moveTo(tx+dx*8,ty+dy*8);g.lineTo(tx-dx*2-nx*8,ty-dy*2-ny*8);g.stroke();}}
+  else if(kind==='L6'){g.beginPath();g.moveTo(50,62);g.lineTo(78,62);g.moveTo(54,62);g.lineTo(59,96);g.lineTo(69,96);g.lineTo(74,62);g.stroke();
+    g.beginPath();g.moveTo(64,28);g.quadraticCurveTo(82,44,72,56);g.lineTo(56,56);g.quadraticCurveTo(46,44,64,28);g.fillStyle='#e07a55';g.fill();g.stroke();}
+  else{g.beginPath();if(g.roundRect)g.roundRect(50,26,28,76,10);else g.rect(50,26,28,76);g.stroke();
+    [[42,'#e07a55'],[64,null],[86,null]].forEach(function(p){g.beginPath();g.arc(64,p[0],7,0,7);if(p[1]){g.fillStyle=p[1];g.fill();}g.stroke();});}
+  var t=new THREE.CanvasTexture(cv);return t;}
+var BADGE={};ORDER.forEach(function(id){BADGE[id]=new THREE.SpriteMaterial({map:badgeTex(id),transparent:true,depthWrite:false});});
+walkers.forEach(function(w){var sp=new THREE.Sprite(BADGE[w.isl]);sp.scale.set(.17,.17,.17);sp.renderOrder=5;scene.add(sp);w.badge=sp;});
+var mBase=new THREE.Matrix4(),mT=new THREE.Matrix4(),mR=new THREE.Matrix4(),mOut=new THREE.Matrix4(),qY=new THREE.Quaternion(),vS=new V3(),vP=new V3(),UPV=new V3(0,1,0);
+function setPart(mesh,idx,x,y,z,rx){mT.makeTranslation(x,y,z);if(rx){mR.makeRotationX(rx);mT.multiply(mR);}mOut.multiplyMatrices(mBase,mT);mesh.setMatrixAt(idx,mOut);}
+function updateWalkers(dt,t){var cp=camera.position;
+  walkers.forEach(function(w,i){var L=w.L,moving=false;
+    if(!reduced){if(w.pause>0)w.pause-=dt;else{w.s+=w.dir*w.speed*dt;if(w.s>=L.len){w.s=L.len;w.dir=-1;w.pause=1.4;}else if(w.s<=0){w.s=0;w.dir=1;w.pause=1.4;}else moving=true;}}
+    var c=L.cum,j=1;while(j<c.length-1&&c[j]<w.s)j++;var a=L.pts[j-1],b=L.pts[j],f=(w.s-c[j-1])/((c[j]-c[j-1])||1);
+    w.pos.set(a.x+(b.x-a.x)*f,a.y+(b.y-a.y)*f,a.z+(b.z-a.z)*f);var dx=(b.x-a.x)*w.dir,dz=(b.z-a.z)*w.dir;if(dx||dz)w.head=Math.atan2(dx,dz);
+    var lift=0;for(var k=0;k<ISL.length;k++){var d=ISL[k];if(Math.hypot(w.pos.x-d.pos.x,w.pos.z-d.pos.y)<2.1){lift=d.lift;break;}}
+    var ph=t*9+w.phase*20,sw=moving?Math.sin(ph):0,bob=moving?Math.abs(Math.sin(ph))*.012:0,dist=cp.distanceTo(w.pos),k2=clamp(dist/20,1,1.45);
+    var bike=w.role==='bike',ry=bike?.06:0;if(bike){sw=0;bob=moving?Math.abs(Math.sin(t*3+w.phase*9))*.004:0;}
+    qY.setFromAxisAngle(UPV,w.head);vS.set(k2,k2,k2);vP.set(w.pos.x,w.pos.y+lift+.003,w.pos.z);mBase.compose(vP,qY,vS);
+    setPart(PART.leg,i*2,-.024,.09+ry,0,bike?-1.1:.55*sw);setPart(PART.leg,i*2+1,.024,.09+ry,0,bike?-1.1:-.55*sw);
+    setPart(PART.body,i,0,.14+bob+ry,0);
+    var aL,aR;if(w.role==='dancer'){var dn=Math.sin(t*5+w.phase*10);aL=Math.PI-.5+.4*dn;aR=Math.PI-.5-.4*dn;}else if(bike){aL=aR=-1.2;}else{aL=-.45*sw;aR=.45*sw;}
+    setPart(PART.arm,i*2,-.062,.19+bob+ry,0,aL);setPart(PART.arm,i*2+1,.062,.19+bob+ry,0,aR);
+    setPart(PART.head,i,0,.275+bob+ry,0);setPart(PART.hair,i,0,.283+bob+ry,-.004);
+    setPart(PART.eye,i*2,-.026,.28+bob+ry,.066);setPart(PART.eye,i*2+1,.026,.28+bob+ry,.066);
+    setPart(shadowMesh,i,0,.002,0);
+    w.badge.position.set(w.pos.x,w.pos.y+lift+(.47+ry)*k2,w.pos.z);w.badge.scale.setScalar(.17*k2);w.badge.visible=dist<16;
+    w._bob=bob;w._ry=ry;w._sw=sw;});
+  Object.keys(ACC).forEach(function(k){var a=ACC[k];a.list.forEach(function(w,j){
+    qY.setFromAxisAngle(UPV,w.head);var k2=clamp(cp.distanceTo(w.pos)/20,1,1.45);vS.set(k2,k2,k2);
+    var lift=0;for(var q=0;q<ISL.length;q++){var d=ISL[q];if(Math.hypot(w.pos.x-d.pos.x,w.pos.z-d.pos.y)<2.1){lift=d.lift;break;}}
+    vP.set(w.pos.x,w.pos.y+lift+.003,w.pos.z);mBase.compose(vP,qY,vS);
+    var y=a.at[1]+(k==='hat'||k==='bag'||k==='flag'?w._bob+w._ry:0)+(k==='dog'?Math.abs(w._sw)*.01:0);
+    setPart(a.mesh,j,a.at[0],y,a.at[2]);});a.mesh.instanceMatrix.needsUpdate=true;});
+  ['leg','arm','body','head','hair','eye'].forEach(function(k){PART[k].instanceMatrix.needsUpdate=true;});shadowMesh.instanceMatrix.needsUpdate=true;
+}
+var legendEl=document.getElementById('legend');
+function updateRoutes(){var any=false;routes.forEach(function(r){var v=routesOn||(!!hoverId&&r.rel.indexOf(hoverId)>=0);r.mesh.visible=v;if(v)any=true;});legendEl.hidden=!any;}
+
+/* ---------- labels ---------- */
+var tagsEl=document.getElementById('tags');
+ALL.forEach(function(d){var b=document.createElement('button');b.className='tag'+(d.mag?' mag':'');b.type='button';
+  b.innerHTML='<b>'+(d.mag?'Live':d.id)+'</b><small class="prog">'+(d.total?'0/'+d.total:'懶人包')+'</small><em class="wr" hidden>錯題</em><span>'+d.name+'</span>';
+  b.addEventListener('click',function(){openIsland(d.id);});
+  b.addEventListener('mouseenter',function(){hoverId=d.id;kick();});
+  b.addEventListener('mouseleave',function(){if(hoverId===d.id)hoverId=null;kick();});
+  tagsEl.appendChild(b);d.tag=b;});
+
+/* ---------- camera ---------- */
+function homeView(){var narrow=window.innerWidth/window.innerHeight<0.8;return {target:new THREE.Vector3(0,0.3,0.6),theta:0,phi:narrow?0.82:0.96,radius:narrow?40:28};}
+var H=homeView(),ctl={target:H.target.clone(),theta:H.theta,phi:H.phi,radius:H.radius},want={target:H.target.clone(),theta:H.theta,phi:H.phi,radius:H.radius},birdseye=false;
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function setWant(v){want.target.copy(v.target);want.theta=v.theta;want.phi=v.phi;want.radius=v.radius;kick();}
+function applyCam(){var sp=Math.sin(ctl.phi);
+  camera.position.set(ctl.target.x+ctl.radius*sp*Math.sin(ctl.theta),ctl.target.y+ctl.radius*Math.cos(ctl.phi),ctl.target.z+ctl.radius*sp*Math.cos(ctl.theta));
+  if(camera.position.y<0.6)camera.position.y=0.6;camera.lookAt(ctl.target);}
+function pan(dx,dy){var s=want.radius*0.0016,t=want.theta;
+  want.target.addScaledVector(new THREE.Vector3(Math.cos(t),0,-Math.sin(t)),-dx*s).addScaledVector(new THREE.Vector3(Math.sin(t),0,Math.cos(t)),-dy*s);
+  var l=Math.hypot(want.target.x,want.target.z);if(l>15){want.target.x*=15/l;want.target.z*=15/l;}}
+var btnBird=document.getElementById('btnBird'),btnTags=document.getElementById('btnTags');
+function exitBird(){if(birdseye){birdseye=false;btnBird.setAttribute('aria-pressed','false');}}
+var cvs=renderer.domElement,ptrs=new Map(),pinch=null,moved=0,dragMode=null,downCount=0;
+var ndc=new THREE.Vector2(),hoverDirty=false,hoverId=null,pointerInside=false;
+function pinchState(){var a=Array.from(ptrs.values());return {x:(a[0].x+a[1].x)/2,y:(a[0].y+a[1].y)/2,d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y)||1};}
+cvs.addEventListener('contextmenu',function(e){e.preventDefault();});
+cvs.addEventListener('pointerdown',function(e){cvs.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  downCount=Math.max(downCount,ptrs.size);if(ptrs.size===1){moved=0;dragMode=(e.button===2||e.shiftKey)?'pan':'rotate';}if(ptrs.size===2)pinch=pinchState();});
+cvs.addEventListener('pointermove',function(e){var r=cvs.getBoundingClientRect();ndc.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);
+  pointerInside=true;hoverDirty=true;var p=ptrs.get(e.pointerId);if(!p){kick();return;}
+  var dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);
+  if(ptrs.size>=2){var s=pinchState();if(pinch){want.radius=clamp(want.radius*pinch.d/s.d,6,52);pan(s.x-pinch.x,s.y-pinch.y);}pinch=s;exitBird();}
+  else if(dragMode==='pan')pan(dx,dy);else{want.theta-=dx*0.006;want.phi=clamp(want.phi-dy*0.005,0.08,1.3);exitBird();}kick();});
+function endPtr(e){if(!ptrs.has(e.pointerId))return;ptrs.delete(e.pointerId);if(ptrs.size<2)pinch=null;
+  if(ptrs.size===0){if(downCount===1&&moved<6&&dragMode==='rotate'){var r=cvs.getBoundingClientRect();ndc.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1);var hit=pick();if(hit)openIsland(hit.id);}
+    downCount=0;dragMode=null;}}
+cvs.addEventListener('pointerup',endPtr);cvs.addEventListener('pointercancel',endPtr);
+cvs.addEventListener('pointerleave',function(){pointerInside=false;if(hoverId){hoverId=null;kick();}});
+cvs.addEventListener('wheel',function(e){e.preventDefault();want.radius=clamp(want.radius*Math.exp(e.deltaY*0.0012),6,52);exitBird();kick();},{passive:false});
+var ray=new THREE.Raycaster();
+function pick(){ray.setFromCamera(ndc,camera);var h=ray.intersectObjects(pickables,false);return h.length?h[0].object.userData.island:null;}
+document.getElementById('btnHome').addEventListener('click',function(){exitBird();setWant(homeView());});
+btnBird.addEventListener('click',function(){birdseye=!birdseye;btnBird.setAttribute('aria-pressed',String(birdseye));
+  if(birdseye)setWant({target:new THREE.Vector3(0,0,0),theta:want.theta,phi:0.05,radius:window.innerWidth<720?46:38});else setWant(homeView());});
+btnTags.addEventListener('click',function(){var on=btnTags.getAttribute('aria-pressed')!=='true';btnTags.setAttribute('aria-pressed',String(on));document.body.classList.toggle('no-tags',!on);kick();});
+var btnRoutes=document.getElementById('btnRoutes');
+btnRoutes.addEventListener('click',function(){routesOn=!routesOn;btnRoutes.setAttribute('aria-pressed',String(routesOn));kick();});
+document.getElementById('btnLog').addEventListener('click',function(){openLog();});
+document.getElementById('btnCert').addEventListener('click',function(){openCert();});
+
+/* ---------- clock ---------- */
+var minutes=600,clockOn=!reduced,clockHold=false,lastEnvMin=-1;
+var btnPlay=document.getElementById('btnPlay'),clockTxt=document.getElementById('clockTxt');
+function syncPlay(){document.getElementById('icoPause').hidden=!clockOn;document.getElementById('icoPlay').hidden=clockOn;
+  var l=clockOn?'暫停時間流動':'讓時間繼續流動';btnPlay.setAttribute('aria-label',l);btnPlay.title=l;}
+btnPlay.addEventListener('click',function(){clockOn=!clockOn;syncPlay();kick();});
+document.querySelectorAll('.jump').forEach(function(b){b.addEventListener('click',function(){minutes=+b.dataset.min;kick();});});
+syncPlay();
+
+var tmpDir=new THREE.Vector3();
+function applyEnv(){var m=Math.floor(minutes);
+  if(m!==lastEnvMin){lastEnvMin=m;sampleEnv(minutes);
+    skyU.uTop.value.copy(ENV.top);skyU.uHor.value.copy(ENV.hor);skyU.uSunCol.value.copy(ENV.sunC);skyU.uNight.value=ENV.night;
+    sky.userData.stars.opacity=ENV.night*0.85;scene.fog.color.copy(ENV.hor);
+    hemi.color.copy(ENV.hs);hemi.groundColor.copy(ENV.hg);hemi.intensity=ENV.hi*LK;sun.color.copy(ENV.sunC);sun.intensity=ENV.sunI*LK;
+    waterU.uTint.value.copy(ENV.water);waterU.uNight.value=ENV.night;
+    mat.bulb.emissiveIntensity=ENV.night*3.2;mat.win.emissiveIntensity=ENV.night*3.2;mat.pool.opacity=0.32*ENV.night;
+    mat.flame.emissiveIntensity=.5+ENV.night*1.6;mat.cloud.emissiveIntensity=.18*(1-ENV.night);
+    bands.forEach(function(b){b.m.color.copy(b.base).lerp(ENV.hor,b.k).multiplyScalar(1-ENV.night*0.35);});
+    var hh=Math.floor(m/60)%24,mm=m%60;clockTxt.textContent=(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm;}
+  var q=Math.floor(minutes/10)*10,t=clamp((q-360)/720,0,1),az=Math.PI*(0.15+0.7*t),el=0.35+Math.sin(t*Math.PI)*0.75;
+  tmpDir.set(Math.cos(az)*Math.cos(el),Math.sin(el),0.55*Math.cos(el)+0.35).normalize();
+  var th=ctl.theta,x=tmpDir.x*Math.cos(th)+tmpDir.z*Math.sin(th),z=-tmpDir.x*Math.sin(th)+tmpDir.z*Math.cos(th);tmpDir.x=x;tmpDir.z=z;
+  sun.position.copy(CENTER).addScaledVector(tmpDir,40);sun.target.position.copy(CENTER);skyU.uSunDir.value.copy(tmpDir);}
+
+/* ---------- progress ---------- */
+function refreshProgress(){
+  var done=0,all=0;
+  ALL.forEach(function(d){var data=DATA[d.id],dn=0,wr=0;
+    data.levels.forEach(function(_,i){var L=S.levels[d.id+'-'+i];if(L&&L.done)dn++;if(L&&L.wrong&&L.wrong.length)wr++;
+      var cr=d.crystals[i];if(cr){var on=!!(L&&L.done);cr.material.color.set(on?0xf2c14e:0xe8e6e1);cr.material.emissiveIntensity=on?.35:0;cr.userData.on=on;}});
+    d.done=dn;d.wrong=wr>0;done+=dn;all+=d.total;
+    d.tag.querySelector('.prog').textContent=d.total?dn+'/'+d.total:'懶人包';d.tag.querySelector('.wr').hidden=!d.wrong;d.tag.classList.toggle('is-done',!!d.total&&dn===d.total);
+    d.flagY=d.total&&dn===d.total?1.02:.2;
+    if(d.ring)d.ring.mesh.material.uniforms.uStyle.value=dn===d.total?0:(wr>0?1:2);});
+  bridgeLinks.forEach(function(b){b.route.mesh.material.uniforms.uStyle.value=b.from.done===b.from.total?0:2;});
+  document.getElementById('btnCert').setAttribute('aria-pressed',String(allDone()));
+  var pct=all?Math.round(done/all*100):0;
+  document.getElementById('barFill').style.width=pct+'%';var bar=document.querySelector('.bar');bar.setAttribute('aria-valuenow',done);bar.setAttribute('aria-valuemax',all);
+  document.getElementById('doneTxt').textContent=done+'/'+all+' 個任務已完成';document.getElementById('pctTxt').textContent=pct+'%';kick();
+}
+
+/* =====================================================================
+   UI: sheets
+   ===================================================================== */
+var scrim=document.getElementById('scrim'),sheet=document.getElementById('sheet'),toastEl=document.getElementById('toast'),toastTimer=0,lastFocus=null,sheetMode=null;
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2600);}
+function openSheet(html,mode,narrow){if(scrim.hidden)lastFocus=document.activeElement;sheetMode=mode;sheet.className='sheet'+(narrow?' narrow':'');sheet.innerHTML=html;scrim.hidden=false;clockHold=true;
+  var b=sheet.querySelector('.sheet-body');if(b)b.scrollTop=0;var f=sheet.querySelector('[data-autofocus]')||sheet.querySelector('button,input');if(f)setTimeout(function(){f.focus({preventScroll:true});},30);}
+function closeSheet(){scrim.hidden=true;sheet.innerHTML='';sheetMode=null;clockHold=false;quiz=null;if(lastFocus&&lastFocus.focus)lastFocus.focus();kick();}
+var X='<button class="x" data-act="close" aria-label="關閉"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+scrim.addEventListener('click',function(e){if(e.target===scrim&&sheetMode!=='login')closeSheet();});
+
+/* ---------- login ---------- */
+function openLogin(){var p=S.player||{};
+  openSheet('<div class="sheet-body login">'+(S.player?X:'')+
+   '<div class="badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z"/></svg></div>'+
+   '<h2 id="sheetTitle">準備好登島了嗎？</h2>'+
+   '<p class="intro">這是一趟把段考內容拆成小任務的複習旅程。每座島是一課，每一關會記錄作答時間與最佳紀錄，答錯的題目會留下來讓你重練。</p>'+
+   '<ol class="steps"><li>點一座島，先讀它的懶人包：單字、片語、句型一次看。</li><li>選擇、打字、拖曳組句三種題型，錯題會留下來重練。</li><li>點亮課本島 13 顆水晶領取證書，Live 雜誌島可以加碼練習。</li></ol>'+
+   '<div class="fields"><div class="field"><label for="fCls">班級</label><input id="fCls" inputmode="numeric" autocomplete="off" placeholder="例如 801" value="'+esc(p.cls||'')+'" data-autofocus></div>'+
+   '<div class="field"><label for="fSeat">座號</label><input id="fSeat" inputmode="numeric" autocomplete="off" placeholder="例如 12" value="'+esc(p.seat||'')+'"></div>'+
+   '<div class="field"><label for="fName">姓名</label><input id="fName" autocomplete="off" placeholder="你的名字" value="'+esc(p.name||'')+'"></div></div>'+
+   '<p class="err" id="fErr" role="alert"></p></div>'+
+   '<div class="sheet-foot">'+(S.player?'<button class="btn btn-gold" data-act="reset">開啟新進度</button>':'')+'<button class="btn btn-primary" data-act="login">'+(S.player?'繼續複習':'開始複習')+'</button></div>','login',false);}
+function doLogin(){var c=sheet.querySelector('#fCls').value.trim(),s=sheet.querySelector('#fSeat').value.trim(),n=sheet.querySelector('#fName').value.trim(),err=sheet.querySelector('#fErr');
+  if(!c||!s||!n){err.textContent='請填寫班級、座號和姓名。';return;}
+  S.player={cls:c,seat:s,name:n};save();syncPlayer();closeSheet();toast('歡迎登島，'+n+'！點一座島開始複習。');}
+function syncPlayer(){document.getElementById('playerName').textContent=S.player?S.player.name:'登島';}
+document.getElementById('btnPlayer').addEventListener('click',openLogin);
+
+/* ---------- lazy pack ---------- */
+function levelStats(lev){var c={mc:0,type:0,order:0};lev.qs.forEach(function(q){c[q.t||'mc']=(c[q.t||'mc']||0)+1;});
+  if(lev.structure)return lev.qs.length+' 題・篇章結構 '+lev.qs.length;
+  if(lev.cloze)return lev.qs.length+' 題・克漏字 '+lev.qs.length;
+  var parts=[];if(c.mc)parts.push('選擇 '+c.mc);if(c.type)parts.push('打字 '+c.type);if(c.order)parts.push('組句 '+c.order);
+  return lev.qs.length+' 題・'+parts.join('・');}
+function nextLevel(id){var d=DATA[id];for(var i=0;i<d.levels.length;i++){var L=S.levels[id+'-'+i];if(!L||!L.done)return i;}return -1;}
+function openPack(id){var d=DATA[id],isl=ALL.find(function(x){return x.id===id;});
+  var h='<div class="sheet-body">'+X+
+   '<div class="pack-head"><div class="pack-icon" style="background:'+d.tint+'">'+d.icon+'</div><div><p class="eyebrow">'+(d.mag?'Live 雜誌懶人包 '+esc(d.unit):'島嶼懶人包 '+id)+'</p><h2 id="sheetTitle">'+esc(d.name)+'</h2><div class="en">'+esc(d.en)+'</div></div>'+
+   (isl.total?'<div class="pack-score"><b>'+isl.done+'/'+isl.total+'</b><span>任務完成</span></div>':'<div class="pack-score"><b>📖</b><span>懶人包</span></div>')+'</div>'+
+   '<div class="lead-box">'+esc(d.lead)+'</div>'+
+   '<div class="sec"><i>🎯</i><h3>這座島要學什麼</h3></div><ul class="bul">'+d.learn.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>'+
+   '<div class="sec"><i>📚</i><h3>必背單字</h3></div><div class="words">'+d.words.map(function(w){
+     return '<button class="word" data-say="'+esc(w[0])+'"><b>'+esc(w[0])+'</b><span class="pos">'+esc(w[1])+'</span><span class="zh">'+esc(w[2])+'</span>'+(w[3]?'<span class="col">'+esc(w[3])+'</span>':'')+'</button>';}).join('')+'</div>'+
+   '<p class="say-note">點單字卡可以聽發音</p>'+
+   '<div class="sec"><i>🧩</i><h3>必會片語</h3></div><div class="phrases">'+d.phrases.map(function(p){return '<div class="phrase"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>';}).join('')+'</div>'+
+   '<div class="sec"><i>🔧</i><h3>句型</h3></div>'+d.patterns.map(function(p){return '<div class="pattern"><code>'+esc(p.f)+'</code><p>'+esc(p.n)+'</p><blockquote>'+esc(p.ex)+'</blockquote></div>';}).join('')+
+   (d.links?'<div class="sec"><i>🔗</i><h3>與課本連結</h3></div><ul class="bul">'+d.links.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>':'')+
+   '<div class="sec"><i>⚠️</i><h3>考前提醒</h3></div><ul class="bul">'+d.tips.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul>'+
+   (d.levels.length?'<div class="sec"><i>🚩</i><h3>這座島的任務</h3></div>':'<div class="sec"><i>📖</i><h3>這座島只有懶人包</h3></div><p style="font-size:16px;color:var(--muted);margin:0">這篇沒有任務，讀完重點就可以回到地圖。</p>')+'<div class="tasks">'+d.levels.map(function(lev,i){var L=S.levels[id+'-'+i];
+     var st=L&&L.done?'<span class="st ok">完成 ✓</span>':(L&&L.wrong&&L.wrong.length?'':'<span class="st">開始 ›</span>');
+     var wr=L&&L.wrong&&L.wrong.length?'<span class="chip-wrong" role="button" tabindex="0" data-act="retry" data-i="'+i+'">錯題 '+L.wrong.length+'</span>':'';
+     var best=L&&L.best!=null?'・最佳 '+L.best+'/'+lev.qs.length+(L.bestTime?'，'+fmtT(L.bestTime):''):'';
+     return '<button class="task'+(L&&L.done?' done':'')+'" data-act="start" data-i="'+i+'"><span class="num">'+(i+1)+'</span><span class="tt"><b>'+esc(lev.name)+'<span>'+esc(lev.en)+'</span></b><small>'+levelStats(lev)+best+'</small></span>'+st+wr+'</button>';}).join('')+'</div>'+
+   '</div>';
+  var ni=nextLevel(id);
+  h+='<div class="sheet-foot"><button class="btn btn-ghost" data-act="close">回到地圖</button>'+(!d.levels.length?'':ni>=0?'<button class="btn btn-primary" data-act="start" data-i="'+ni+'" data-autofocus>開始：'+esc(d.levels[ni].name)+'</button>':'<button class="btn btn-primary" data-act="start" data-i="0">再挑戰一次</button>')+'</div>';
+  openSheet(h,'pack:'+id);
+}
+function fmtT(s){s=Math.round(s);var m=Math.floor(s/60),r=s%60;return m+':'+(r<10?'0':'')+r;}
+function speak(w){try{var u=new SpeechSynthesisUtterance(w.replace(/\./g,''));u.lang='en-US';u.rate=0.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+
+/* ---------- quiz ---------- */
+var quiz=null;
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function startQuiz(id,li,onlyWrong){
+  var lev=DATA[id].levels[li],L=lv(id,li),list=onlyWrong&&L.wrong.length?L.wrong.slice():lev.qs.map(function(_,i){return i;});
+  quiz={id:id,li:li,lev:lev,list:list,i:0,retry:!!(onlyWrong&&L.wrong.length),score:0,streak:0,wrongNow:[],res:[],t0:performance.now(),answered:false,hintN:0,order:null};
+  renderQ();
+}
+function normalize(s){return s.toLowerCase().replace(/[’']/g,"'").replace(/[,.!?]/g,' ').replace(/\s+/g,' ').trim();}
+function qHTML(text){return esc(text).replace(/([A-Za-z]?)_{2,}/g,function(m,l){return l?'<span class="lt">'+l+'</span><span class="blank"></span>':'<span class="blank"></span>';});}
+function passageHTML(p,cur){return p.split('\n\n').map(function(par){return '<p>'+esc(par).replace(/\{(\d)\}/g,function(m,n){return '<span class="gap'+(+n===cur?' cur':'')+'" id="gap'+n+'">('+n+')</span>';})+'</p>';}).join('');}
+function renderQ(){
+  var q=quiz,lev=q.lev,qi=q.list[q.i],Q=lev.qs[qi],t=lev.cloze?'mc':(Q.t||'mc');
+  q.answered=false;q.hintN=0;
+  var typeName=lev.structure?'篇章結構':lev.cloze?'克漏字':t==='type'?'打字題':t==='order'?'組句題':'選擇題';
+  var segs='';for(var k=0;k<q.list.length;k++){var c=k<q.i?(q.res[k]?'ok':'bad'):(k===q.i?'on':'');segs+='<i class="'+c+'"></i>';}
+  var concept=t==='type'?'打字題給中文意思和字首，卡住可以按「多一個字母」。':t==='order'?'點語塊放進句子，點已放好的語塊可以拿回來；用電腦也可以拖曳調整順序。':lev.cloze?'先讀上方文章，再選出最適合放進亮色空格的答案。':'鍵盤可按 1–4 或 A–D 作答，Enter 下一題。';
+  var h='<div class="sheet-body">'+X+'<div class="qhead"><div><div class="qmeta"><p class="eyebrow">'+code(q.id)+' '+esc(lev.name)+'</p><span class="pill'+(q.retry?' re':'')+'">'+(q.retry?'錯題重練':'完整挑戰')+'</span><span class="pill">'+typeName+'</span></div>'+
+   '<h2 id="sheetTitle">'+esc(lev.en)+'</h2><p class="desc">'+esc(lev.desc)+'</p></div>'+
+   '<div class="qcount">第 '+(q.i+1)+' / '+q.list.length+' 題<br><span class="streak">連對 '+q.streak+'</span></div></div>'+
+   '<div class="segs" aria-hidden="true">'+segs+'</div>'+
+   '<div class="concept"><b>CONCEPT CARD</b><p>'+concept+'</p></div>';
+  if(lev.cloze){h+='<div class="passage" id="passage">'+passageHTML(lev.passage,Q.b)+'</div><p class="qtext">第 ('+Q.b+') 格'+(Q.tag&&!lev.structure?'<span style="font-size:.6em;color:var(--muted);font-weight:500;margin-left:12px">考點：'+esc(Q.tag)+'</span>':'')+'</p><p class="keys">鍵盤可按 1–'+(lev.structure?5:4)+' 作答，Enter 下一題</p>';
+    var opts=lev.structure?lev.shared:Q.o;h+='<div class="opts">'+opts.map(function(o,i){return '<button class="opt" data-act="pick" data-i="'+i+'"><span class="k">'+'ABCDE'[i]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';}
+  else if(t==='mc'){h+='<p class="qtext">'+qHTML(Q.q)+'</p><p class="keys">鍵盤可按 1–4 作答，Enter 下一題</p><div class="opts">'+Q.o.map(function(o,i){return '<button class="opt" data-act="pick" data-i="'+i+'"><span class="k">'+'ABCD'[i]+'</span><span>'+esc(o)+'</span></button>';}).join('')+'</div>';}
+  else if(t==='type'){h+='<p class="qtext">'+qHTML(Q.q)+'</p><div class="hintline"><span class="zh">'+esc(Q.hint)+'</span><span class="mask" id="mask"></span><button class="more" data-act="more">多一個字母</button></div>'+
+    '<div class="typ"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="輸入答案" data-autofocus><button class="btn btn-primary" data-act="check">送出</button></div>';}
+  else{q.order={placed:[],pool:shuffleNot(Q.c)};h+='<p class="qtext" style="font-size:20px;font-weight:500;color:var(--muted)">'+esc(Q.zh)+'</p><div class="ordbox" id="ordbox"></div><div class="pool" id="pool"></div>'+
+    '<div style="margin-top:16px"><button class="btn btn-primary" data-act="check" id="ordCheck" disabled>送出</button></div>';}
+  h+='<div id="fb"></div></div><div class="sheet-foot"><span class="grow">'+(S.player?esc(S.player.cls+' 班 '+S.player.seat+' 號 '+S.player.name):'')+'</span><button class="btn btn-ghost" data-act="pack">回到懶人包</button><button class="btn btn-primary" data-act="next" id="btnNext" disabled>下一題</button></div>';
+  openSheet(h,'quiz');
+  if(t==='type')updMask();
+  if(t==='order')drawOrder();
+  if(lev.cloze){var g=sheet.querySelector('#gap'+Q.b),pz=sheet.querySelector('#passage');if(g&&pz)pz.scrollTop=Math.max(0,g.offsetTop-pz.offsetTop-80);}
+}
+function shuffleNot(c){var idx=c.map(function(_,i){return i;}),s=idx;for(var k=0;k<8;k++){s=shuffle(idx);if(s.some(function(v,i){return v!==i;}))break;}return s;}
+function curQ(){return quiz.lev.qs[quiz.list[quiz.i]];}
+function updMask(){var Q=curQ(),a=Q.a[0],n=quiz.hintN;var out='';for(var i=0;i<a.length;i++){var ch=a[i];out+=ch===' '?'  ':(i<n?ch:'_');}
+  var m=sheet.querySelector('#mask');if(m)m.textContent=n?out:'';}
+function drawOrder(){var Q=curQ(),o=quiz.order,box=sheet.querySelector('#ordbox'),pool=sheet.querySelector('#pool');
+  box.innerHTML=o.placed.length?o.placed.map(function(ci,k){return '<button class="chunk" draggable="true" data-act="unplace" data-k="'+k+'">'+esc(Q.c[ci])+'</button>';}).join(''):'<span class="ph">點下方語塊，依序排成句子</span>';
+  pool.innerHTML=o.pool.map(function(ci,k){return '<button class="chunk" data-act="place" data-k="'+k+'">'+esc(Q.c[ci])+'</button>';}).join('');
+  sheet.querySelector('#ordCheck').disabled=o.pool.length>0||quiz.answered;
+  box.querySelectorAll('.chunk').forEach(function(el){
+    el.addEventListener('dragstart',function(e){if(quiz.answered){e.preventDefault();return;}el.classList.add('dragging');e.dataTransfer.setData('text/plain',el.dataset.k);e.dataTransfer.effectAllowed='move';});
+    el.addEventListener('dragend',function(){el.classList.remove('dragging');});
+    el.addEventListener('dragover',function(e){e.preventDefault();});
+    el.addEventListener('drop',function(e){e.preventDefault();var from=+e.dataTransfer.getData('text/plain'),to=+el.dataset.k;if(isNaN(from)||from===to)return;
+      var v=o.placed.splice(from,1)[0];o.placed.splice(to,0,v);drawOrder();});
+  });
+}
+function answer(ok,detail){var q=quiz;q.answered=true;q.res[q.i]=ok;
+  if(ok){q.score++;q.streak++;}else{q.streak=0;q.wrongNow.push(q.list[q.i]);}
+  var fb=sheet.querySelector('#fb');fb.innerHTML='<div class="fb '+(ok?'ok':'bad')+'" role="status"><b>'+(ok?'答對了！':'再想想。')+'</b> '+detail+'</div>';
+  sheet.querySelector('.streak').textContent='連對 '+q.streak;
+  var nb=sheet.querySelector('#btnNext');nb.disabled=false;nb.textContent=q.i===q.list.length-1?'看結果':'下一題';nb.focus({preventScroll:true});
+  fb.scrollIntoView({block:'nearest',behavior:reduced?'auto':'smooth'});
+}
+function pickOpt(i){if(quiz.answered)return;var lev=quiz.lev,Q=curQ(),a=Q.a,opts=lev.structure?lev.shared:Q.o;
+  var els=sheet.querySelectorAll('.opt');els.forEach(function(e){e.disabled=true;});els[a].classList.add('ok');if(i!==a)els[i].classList.add('bad');
+  var L='ABCDE';var det='正解是 ('+L[a]+') '+esc(opts[a])+'。'+(Q.clue?'<br>'+esc(Q.clue):(lev.cloze&&Q.tag?' 考點：'+esc(Q.tag)+'。':''));
+  answer(i===a,det);}
+function checkType(){if(quiz.answered)return;var inp=sheet.querySelector('#ans'),v=normalize(inp.value);if(!v){inp.focus();return;}
+  var Q=curQ(),ok=Q.a.some(function(a){return normalize(a)===v;});inp.classList.add(ok?'ok':'bad');inp.readOnly=true;
+  answer(ok,ok?'':'正解是 <b>'+esc(Q.a[0])+'</b>。');}
+function checkOrder(){if(quiz.answered)return;var Q=curQ(),o=quiz.order,ok=o.placed.every(function(v,i){return v===i;});
+  sheet.querySelector('#ordbox').classList.add(ok?'ok':'bad');quiz.answered=true;drawOrder();
+  answer(ok,ok?esc(Q.c.join(' ')):'正確句子：'+esc(Q.c.join(' ')));}
+function nextQ(){if(!quiz||!quiz.answered)return;if(quiz.i<quiz.list.length-1){quiz.i++;renderQ();}else finishQuiz();}
+function finishQuiz(){var q=quiz,L=lv(q.id,q.li),secs=(performance.now()-q.t0)/1000,total=q.list.length,wasDone=L.done;
+  L.attempts++;
+  if(q.retry){L.wrong=q.wrongNow.slice();}
+  else{L.wrong=q.wrongNow.slice();if(L.best==null||q.score>L.best||(q.score===L.best&&secs<L.bestTime)){L.best=q.score;L.bestTime=secs;}}
+  if(L.wrong.length===0)L.done=true;
+  S.log.push({t:Date.now(),id:q.id,li:q.li,retry:q.retry,score:q.score,total:total,secs:Math.round(secs)});if(S.log.length>300)S.log=S.log.slice(-300);
+  queueRecord({cls:S.player?S.player.cls:'',seat:S.player?S.player.seat:'',name:S.player?S.player.name:'',island:(DATA[q.id].mag?'Live '+DATA[q.id].unit+' ':q.id+' ')+DATA[q.id].name,
+    level:q.lev.name+(q.retry?'（錯題重練）':''),score:q.score,total:total,seconds:Math.round(secs),
+    wrong:q.wrongNow.map(function(qi){var Q=q.lev.qs[qi];return (qi+1)+'. '+(q.lev.cloze?'第('+Q.b+')格':(Q.q||Q.zh||''));})});
+  save();refreshProgress();
+  var isl=ALL.find(function(x){return x.id===q.id;});
+  var lev=q.lev,wl=q.wrongNow.map(function(qi){var Q=lev.qs[qi];
+    if(lev.cloze){var opts=lev.structure?lev.shared:Q.o;return '<li>第 ('+Q.b+') 格：<b>'+esc(opts[Q.a])+'</b></li>';}
+    if(Q.t==='type')return '<li>'+esc(Q.q)+'<br>正解：<b>'+esc(Q.a[0])+'</b></li>';
+    if(Q.t==='order')return '<li>'+esc(Q.zh)+'<br>正解：<b>'+esc(Q.c.join(' '))+'</b></li>';
+    return '<li>'+esc(Q.q)+'<br>正解：<b>'+esc(Q.o[Q.a])+'</b></li>';}).join('');
+  var title=L.done?(wasDone?'再次完成！':'關卡點亮！'):'還差一點';
+  var msg=L.done?(isl.done===isl.total?(isl.mag?isl.name:q.id)+' 全島點亮，旗子升起來了。':'水晶亮起來了，繼續下一關。'):'答錯的題目已經存成錯題，重練答對就能點亮水晶。';
+  var h='<div class="sheet-body">'+X+'<p class="eyebrow">'+code(q.id)+' '+esc(lev.name)+(q.retry?' 錯題重練':'')+'</p><h2 id="sheetTitle" style="font-size:clamp(30px,4vw,46px);font-weight:900;margin:12px 0 6px">'+title+'</h2><p class="desc" style="font-size:17px;color:var(--muted);margin:0">'+msg+'</p>'+
+   '<div class="res-big"><div><b>'+q.score+'/'+total+'</b><span>這次答對</span></div><div><b>'+fmtT(secs)+'</b><span>作答時間</span></div><div><b>'+(L.best!=null?L.best+'/'+lev.qs.length:'—')+'</b><span>最佳紀錄'+(L.bestTime?'（'+fmtT(L.bestTime)+'）':'')+'</span></div></div>'+
+   (wl?'<div class="sec" style="margin-top:8px"><i>📝</i><h3>這次的錯題</h3></div><ul class="wrong-list">'+wl+'</ul>':'')+'</div>';
+  var ni=nextLevel(q.id);
+  h+='<div class="sheet-foot"><button class="btn btn-ghost" data-act="pack">回到懶人包</button>'+(allDone()?'<button class="btn btn-gold" data-act="cert">領取證書</button>':'')+
+   (L.wrong.length?'<button class="btn btn-gold" data-act="retry" data-i="'+q.li+'">重練錯題 '+L.wrong.length+'</button>':'')+
+   (ni>=0&&ni!==q.li?'<button class="btn btn-primary" data-act="start" data-i="'+ni+'">下一關：'+esc(DATA[q.id].levels[ni].name)+'</button>':(L.wrong.length?'':'<button class="btn btn-primary" data-act="close">回到地圖</button>'))+'</div>';
+  var keepId=q.id;openSheet(h,'result:'+keepId);quiz=null;sheet.dataset.isl=keepId;
+  if(L.done&&!wasDone)toast(!isl.mag&&allDone()?'課本島 13 顆水晶全部點亮！可以領取證書了。':(isl.done===isl.total?(isl.mag?isl.name:q.id+' '+isl.name)+' 全島點亮！':'點亮一顆水晶！'));
+  flushOutbox();
+}
+
+/* ---------- sheet events ---------- */
+function islandOfSheet(){if(quiz)return quiz.id;var m=(sheetMode||'').split(':');return m[1]||sheet.dataset.isl;}
+sheet.addEventListener('click',function(e){var b=e.target.closest('[data-act],[data-say]');if(!b)return;
+  if(b.dataset.say){speak(b.dataset.say);b.classList.add('say');setTimeout(function(){b.classList.remove('say');},180);return;}
+  var act=b.dataset.act,id=islandOfSheet();
+  if(act==='close'){closeSheet();}
+  else if(act==='login'){doLogin();}
+  else if(act==='cert'){openCert();}
+  else if(act==='log'){openLog();}
+  else if(act==='resend'){flushOutbox();toast('正在重新上傳紀錄…');setTimeout(function(){if(sheetMode==='log')openLog();},1500);}
+  else if(act==='reset'){if(window.confirm('確定要清除所有作答紀錄，重新開始嗎？')){S.levels={};save();refreshProgress();doLogin();}}
+  else if(act==='start'){e.stopPropagation();startQuiz(id,+b.dataset.i,false);}
+  else if(act==='retry'){e.stopPropagation();startQuiz(id,+b.dataset.i,true);}
+  else if(act==='pack'){quiz=null;openPack(id);}
+  else if(act==='pick'){pickOpt(+b.dataset.i);}
+  else if(act==='check'){var t=quiz&&(curQ().t||'mc');if(t==='type')checkType();else if(t==='order')checkOrder();}
+  else if(act==='more'){if(quiz.answered)return;var a=curQ().a[0];if(quiz.hintN<a.length){quiz.hintN++;while(a[quiz.hintN-1]===' '&&quiz.hintN<a.length)quiz.hintN++;updMask();}}
+  else if(act==='next'){nextQ();}
+  else if(act==='place'){if(quiz.answered)return;var o=quiz.order,v=o.pool.splice(+b.dataset.k,1)[0];o.placed.push(v);drawOrder();}
+  else if(act==='unplace'){if(quiz.answered)return;var o2=quiz.order,v2=o2.placed.splice(+b.dataset.k,1)[0];o2.pool.push(v2);drawOrder();}
+});
+sheet.addEventListener('keydown',function(e){var b=e.target.closest('.chip-wrong');if(b&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();startQuiz(islandOfSheet(),+b.dataset.i,true);}});
+
+window.addEventListener('keydown',function(e){
+  var t=e.target,inInput=t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA');
+  if(!scrim.hidden){
+    if(e.key==='Escape'&&sheetMode!=='login'){e.preventDefault();closeSheet();return;}
+    if(sheetMode==='login'&&e.key==='Enter'){e.preventDefault();doLogin();return;}
+    if(quiz){var Q=curQ(),ty=quiz.lev.cloze?'mc':(Q.t||'mc');
+      if(e.key==='Enter'){ if(quiz.answered){e.preventDefault();nextQ();}else if(ty==='type'&&inInput){e.preventDefault();checkType();} return;}
+      if(ty==='mc'&&!quiz.answered&&!inInput){var n=quiz.lev.structure?5:4,k=e.key.toUpperCase(),idx=-1;
+        if(/^[1-9]$/.test(k))idx=+k-1;else if('ABCDE'.indexOf(k)>=0&&k.length===1)idx='ABCDE'.indexOf(k);
+        if(idx>=0&&idx<n){e.preventDefault();pickOpt(idx);}}
+    }
+    return;
+  }
+  if(inInput)return;var used=true;
+  if(e.key==='ArrowLeft')want.theta+=0.12;else if(e.key==='ArrowRight')want.theta-=0.12;
+  else if(e.key==='ArrowUp')want.radius=clamp(want.radius*0.9,6,52);else if(e.key==='ArrowDown')want.radius=clamp(want.radius*1.1,6,52);else used=false;
+  if(used){e.preventDefault();exitBird();kick();}
+});
+
+/* ---------- spreadsheet outbox ---------- */
+var flushing=false;
+function queueRecord(rec){if(!window.SHEET_URL)return;rec.sentAt=new Date().toISOString();S.outbox.push(rec);if(S.outbox.length>200)S.outbox=S.outbox.slice(-200);}
+function flushOutbox(){if(!window.SHEET_URL||flushing||!S.outbox.length||!window.fetch)return;flushing=true;var rec=S.outbox[0];
+  fetch(window.SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)})
+    .then(function(){S.outbox.shift();save();flushing=false;flushOutbox();})
+    .catch(function(){flushing=false;});}
+
+/* ---------- City Log ---------- */
+function allDone(){return ISL.every(function(d){return d.done===d.total;});}
+function stamp(t){var d=new Date(t),p=function(n){return (n<10?'0':'')+n;};return (d.getMonth()+1)+'/'+d.getDate()+' '+p(d.getHours())+':'+p(d.getMinutes());}
+function openLog(){
+  var logs=S.log||[],secs=0,doneN=0,all=0,bestS=0,allQ=0,rows='';
+  logs.forEach(function(e){secs+=e.secs||0;});
+  ALL.forEach(function(d){DATA[d.id].levels.forEach(function(lev,i){var L=S.levels[d.id+'-'+i]||{};all++;allQ+=lev.qs.length;if(L.done)doneN++;if(L.best!=null)bestS+=L.best;
+    var st=L.done?'<span class="st-ok">已點亮</span>':(L.attempts?'<span class="st-bad">待重練 '+(L.wrong?L.wrong.length:0)+'</span>':'<span class="st-none">未開始</span>');
+    rows+='<tr><td>'+(d.mag?esc(d.name):d.id)+'</td><td>'+esc(lev.name)+'</td><td class="num">'+(L.best!=null?L.best+'/'+lev.qs.length:'—')+'</td><td class="num">'+(L.bestTime?fmtT(L.bestTime):'—')+'</td><td class="num">'+(L.attempts||0)+'</td><td>'+st+'</td></tr>';});});
+  var recent=logs.slice(-15).reverse().map(function(e){var lev=DATA[e.id].levels[e.li];
+    return '<tr><td class="num">'+stamp(e.t)+'</td><td>'+(DATA[e.id].mag?esc(DATA[e.id].name):e.id)+' '+esc(lev.name)+(e.retry?'（錯題重練）':'')+'</td><td class="num">'+e.score+'/'+e.total+'</td><td class="num">'+fmtT(e.secs)+'</td></tr>';}).join('');
+  var who=S.player?esc(S.player.name)+' 的學習日誌':'學習日誌';
+  var pend=window.SHEET_URL&&S.outbox.length?'<div class="pend">還有 '+S.outbox.length+' 筆紀錄等待上傳到老師的試算表。<button class="more" data-act="resend">重新上傳</button></div>':'';
+  openSheet('<div class="sheet-body">'+X+'<p class="eyebrow">CITY LOG</p><h2 id="sheetTitle" style="font-size:clamp(30px,4vw,46px);font-weight:900;margin:12px 0 6px">'+who+'</h2>'+
+    '<p class="desc" style="font-size:16px;color:var(--muted);margin:0">'+(S.player?esc(S.player.cls+' 班 '+S.player.seat+' 號'):'')+'</p>'+
+    '<div class="res-big"><div><b>'+doneN+'/'+all+'</b><span>點亮的水晶</span></div><div><b>'+logs.length+'</b><span>作答次數</span></div><div><b>'+fmtT(secs)+'</b><span>累計作答時間</span></div><div><b>'+(allQ?Math.round(bestS/allQ*100):0)+'%</b><span>最佳紀錄答對率</span></div></div>'+pend+
+    '<div class="sec"><i>🗺️</i><h3>各關紀錄</h3></div><div class="tbl-wrap"><table class="ltable"><thead><tr><th>島</th><th>關卡</th><th>最佳</th><th>最佳時間</th><th>次數</th><th>狀態</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div class="sec"><i>🕒</i><h3>最近作答</h3></div>'+(recent?'<div class="tbl-wrap"><table class="ltable"><thead><tr><th>時間</th><th>關卡</th><th>答對</th><th>用時</th></tr></thead><tbody>'+recent+'</tbody></table></div>':'<p class="say-note" style="font-size:15px">還沒有作答紀錄，點一座島開始吧。</p>')+
+    '</div><div class="sheet-foot"><button class="btn btn-ghost" data-act="close">回到地圖</button>'+(allDone()?'<button class="btn btn-primary" data-act="cert">領取證書</button>':'')+'</div>','log');
+}
+
+/* ---------- certificate ---------- */
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function drawCert(){
+  var W=1600,Hh=1130,cv=document.createElement('canvas');cv.width=W;cv.height=Hh;var g=cv.getContext('2d'),F='"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif',p=S.player;
+  g.fillStyle='#fffaf3';g.fillRect(0,0,W,Hh);
+  g.fillStyle='#e8f3ef';g.beginPath();g.arc(1470,130,230,0,7);g.fill();g.fillStyle='#fbe9e0';g.beginPath();g.arc(120,1050,250,0,7);g.fill();
+  g.fillStyle='#fdf1d4';g.beginPath();g.arc(1380,1000,120,0,7);g.fill();
+  rr(g,40,40,W-80,Hh-80,40);g.lineWidth=6;g.strokeStyle='#e07a55';g.stroke();rr(g,64,64,W-128,Hh-128,30);g.lineWidth=2;g.strokeStyle='#f0c8b4';g.stroke();
+  g.textAlign='center';g.fillStyle='#c25a35';g.font='700 26px '+F;g.fillText('T H E   R E V I E W   I N D E X',W/2,170);
+  g.fillStyle='#2b2622';g.font='900 88px '+F;g.fillText('第二次段考複習島',W/2,280);
+  g.fillStyle='#7a6f66';g.font='500 34px '+F;g.fillText('完成證書',W/2,340);
+  g.font='400 30px '+F;g.fillText('頒發給',W/2,430);
+  g.fillStyle='#2b2622';g.font='900 110px '+F;g.fillText(p.name,W/2,560);
+  g.fillStyle='#7a6f66';g.font='500 32px '+F;g.fillText(p.cls+' 班　'+p.seat+' 號',W/2,620);
+  g.fillStyle='#2b2622';g.font='400 32px '+F;g.fillText('完成 L4–L6 與 R2 共 13 個複習任務，點亮了全部水晶。',W/2,700);
+  var x=110,secs=0;(S.log||[]).forEach(function(e){secs+=e.secs||0;});
+  ISL.forEach(function(d){var data=DATA[d.id],b=0,t=0;data.levels.forEach(function(lev,i){var L=S.levels[d.id+'-'+i]||{};b+=L.best||0;t+=lev.qs.length;});
+    rr(g,x,760,330,150,26);g.fillStyle=data.tint;g.fill();
+    g.textAlign='left';g.fillStyle='#c25a35';g.font='700 30px '+F;g.fillText(d.id,x+28,812);
+    g.fillStyle='#2b2622';g.font='700 28px '+F;g.fillText(d.name,x+28,856);
+    g.fillStyle='#7a6f66';g.font='500 24px '+F;g.fillText('最佳答對 '+b+'/'+t,x+28,892);x+=350;});
+  var md=0,mt=0;MAG.forEach(function(d){md+=d.done;mt+=d.total;});g.textAlign='center';g.fillStyle='#3f8f6b';g.font='700 26px '+F;g.fillText('Live 雜誌島加碼練習　'+md+'/'+mt,W/2,962);
+  g.textAlign='left';g.fillStyle='#7a6f66';g.font='500 26px '+F;var dt=new Date();
+  g.fillText('日期　'+dt.getFullYear()+'/'+(dt.getMonth()+1)+'/'+dt.getDate(),110,1010);
+  g.textAlign='right';g.fillText('累計作答時間　'+fmtT(secs),W-110,1010);
+  return cv.toDataURL('image/png');
+}
+function openCert(){
+  if(!S.player){openLogin();return;}
+  var left=[];ISL.forEach(function(d){DATA[d.id].levels.forEach(function(lev,i){var L=S.levels[d.id+'-'+i];if(!L||!L.done)left.push(d.id+' '+lev.name);});});
+  if(left.length){openSheet('<div class="sheet-body">'+X+'<p class="eyebrow">CERTIFICATE</p><h2 id="sheetTitle" style="font-size:clamp(28px,3.6vw,42px);font-weight:900;margin:12px 0 8px">證書還沒解鎖</h2>'+
+    '<p style="font-size:17px;color:var(--muted);margin:0">再完成 '+left.length+' 關、點亮全部 13 顆水晶，就能領取完成證書。</p><ul class="left-list">'+left.map(function(t){return '<li>'+esc(t)+'</li>';}).join('')+'</ul></div>'+
+    '<div class="sheet-foot"><button class="btn btn-primary" data-act="close">繼續複習</button></div>','cert',true);return;}
+  openSheet('<div class="sheet-body">'+X+'<p class="eyebrow">CERTIFICATE</p><h2 id="sheetTitle" style="font-size:clamp(28px,3.6vw,42px);font-weight:900;margin:12px 0 8px">恭喜完成全部 13 關！</h2>'+
+    '<p style="font-size:17px;color:var(--muted);margin:0">這是你的完成證書，可以下載保存或給老師看。</p><p class="say-note" id="certBox">證書產生中…</p></div>'+
+    '<div class="sheet-foot"><span class="grow">下載沒有反應時，可以在圖片上按右鍵或長按另存。</span><button class="btn btn-ghost" data-act="close">回到地圖</button><a class="btn btn-primary" id="certDl" href="#" download="複習島證書.png">下載證書</a></div>','cert',true);
+  var ready=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+  ready.then(function(){var url=drawCert(),box=sheet.querySelector('#certBox');if(!box)return;
+    box.outerHTML='<img class="cert-img" alt="'+esc(S.player.name)+' 的完成證書" src="'+url+'">';
+    var a=sheet.querySelector('#certDl');a.href=url;a.download='複習島證書-'+S.player.name+'.png';});
+}
+
+function openIsland(id){var d=ALL.find(function(x){return x.id===id;});if(!d)return;exitBird();
+  setWant({target:new THREE.Vector3(d.pos.x,0.4,d.pos.y),theta:want.theta,phi:0.92,radius:d.mag?7.5:10.5});
+  if(!S.player){openLogin();return;}
+  setTimeout(function(){openPack(id);},reduced?0:380);}
+window.openIsland=openIsland;
+
+/* ---------- labels ---------- */
+var proj=new THREE.Vector3();
+function placeTags(){var w=window.innerWidth,h=window.innerHeight;
+  ALL.forEach(function(d){proj.set(d.pos.x,(d.mag?TOP*0.62+1.05:TOP+1.5)+d.lift,d.pos.y).project(camera);
+    var vis=proj.z<1&&proj.x>-1.2&&proj.x<1.2&&proj.y>-1.2&&proj.y<1.2;d.tag.style.visibility=vis?'visible':'hidden';
+    d.tag.style.transform='translate('+((proj.x*0.5+0.5)*w)+'px,'+((-proj.y*0.5+0.5)*h)+'px) translate(-50%,-100%)';
+    d.tag.style.zIndex=String(Math.round((1-proj.z)*1000));d.tag.classList.toggle('is-hover',hoverId===d.id);});}
+
+function resize(){var w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();kick();}
+if(window.ResizeObserver)new ResizeObserver(resize).observe(document.body);else window.addEventListener('resize',resize);
+resize();
+
+/* ---------- loop ---------- */
+var dirty=true,last=performance.now(),firstFrame=true,elapsed=0;
+function kick(){dirty=true;}
+function step(c,t,f){return c+(t-c)*f;}
+function frame(now){requestAnimationFrame(frame);if(document.hidden){last=now;return;}
+  var dt=Math.min((now-last)/1000,0.08);last=now;elapsed+=dt;var active=false;
+  if(clockOn&&!clockHold){minutes=(minutes+dt*10)%1440;active=true;}
+  var f=1-Math.exp(-dt*(reduced?40:7)),moving=false;
+  ctl.theta=step(ctl.theta,want.theta,f);ctl.phi=step(ctl.phi,want.phi,f);ctl.radius=step(ctl.radius,want.radius,f);ctl.target.lerp(want.target,f);
+  if(Math.abs(ctl.theta-want.theta)>1e-4||Math.abs(ctl.phi-want.phi)>1e-4||Math.abs(ctl.radius-want.radius)>1e-3||ctl.target.distanceToSquared(want.target)>1e-6)moving=true;
+  if(hoverDirty&&pointerInside&&ptrs.size===0&&scrim.hidden){hoverDirty=false;var hp=pick(),id=hp?hp.id:null;if(id!==hoverId){hoverId=id;cvs.style.cursor=id?'pointer':'grab';}}
+  var g=1-Math.exp(-dt*10);
+  ALL.forEach(function(d){var goal=hoverId===d.id?1:0;d.hover=step(d.hover,goal,g);if(Math.abs(d.hover-goal)>1e-3)moving=true;
+    d.lift=d.hover*0.08;d.body.position.y=d.lift;d.outline.material.opacity=d.hover*0.85;
+    if(d.flag){var fy=step(d.flag.position.y,d.flagY,1-Math.exp(-dt*2));if(Math.abs(fy-d.flagY)>1e-3)moving=true;d.flag.position.y=fy;}
+    d.crystals.forEach(function(c,i){if(c.userData.on&&!reduced){c.rotation.y+=dt*1.2;c.position.y=.24+Math.sin(elapsed*2+i)*.025;}});});
+  if(!reduced){waterU.uTime.value+=dt;routeTime.value+=dt;active=true;
+    clouds.forEach(function(c){c.position.x+=dt*c.userData.v;if(c.position.x>95)c.position.x=-95;});
+    boats.forEach(function(b){var u=b.userData;u.a+=dt*u.s;b.position.set(Math.cos(u.a)*u.r,Math.sin(elapsed*1.3+u.ph)*0.04,Math.sin(u.a)*u.r*0.8);b.rotation.y=-u.a;b.rotation.z=Math.sin(elapsed*1.1+u.ph)*0.04;});}
+  if(!(active||moving||dirty))return;dirty=false;
+  applyEnv();applyCam();sky.position.copy(camera.position);updateWalkers(dt,elapsed);updateRoutes();placeTags();renderer.render(scene,camera);
+  if(firstFrame){firstFrame=false;document.getElementById('loader').classList.add('done');if(!S.player)setTimeout(openLogin,500);}}
+boats.forEach(function(b){var u=b.userData;b.position.set(Math.cos(u.a)*u.r,0,Math.sin(u.a)*u.r*0.8);});
+syncPlayer();refreshProgress();flushOutbox();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
